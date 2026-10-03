@@ -10,7 +10,11 @@ const links = [
 ];
 
 
-export default function SiteFooter() {
+import { getSettings } from "@/lib/settings";
+
+export default async function SiteFooter() {
+  const s = await getSettings();
+  const socials = [["facebook", "Facebook"], ["instagram", "Instagram"], ["x", "X"], ["youtube", "YouTube"], ["telegram", "Telegram"]].filter(([k]) => s[k]);
   return (
     <footer className="footer">
       <div className="wrap">
@@ -20,9 +24,12 @@ export default function SiteFooter() {
               <Link href={`/${s}`}>{n}</Link>
             </li>
           ))}
+          {socials.map(([k, n]) => (
+            <li key={k}><a href={s[k]} target="_blank" rel="noopener noreferrer">{n}</a></li>
+          ))}
           <li><a href="/feed.xml">RSS</a></li>
         </ul>
-        <p>Copyright © {new Date().getFullYear()} Antonio Scaduto. Tutti i diritti riservati.</p>
+        <p>Copyright © {new Date().getFullYear()} {s.site_title}. Tutti i diritti riservati.</p>
       </div>
     </footer>
   );

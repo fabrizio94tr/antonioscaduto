@@ -10,7 +10,7 @@ export default async function Ticker() {
         <strong>ULTIM'ORA</strong>
         <div className="ticker-track">
           {items.map((a) => (
-            <Link key={a.id} href={`/articolo/${a.slug}`}>{a.title}</Link>
+            <Link key={a.id} href={`/${a.slug}`}>{a.title}</Link>
           ))}
         </div>
       </div>

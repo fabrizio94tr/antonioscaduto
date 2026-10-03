@@ -1,12 +1,26 @@
 import type { MetadataRoute } from "next";
-import { getArticles, getCategories } from "@/lib/data";
+import { getCategories, getSlugChunk } from "@/lib/data";
+import { SITE_URL } from "@/lib/seo";
+import { hasSupabase, supabasePublic } from "@/lib/supabase";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.antonioscaduto.com";
-  const [arts, cats] = await Promise.all([getArticles({ limit: 500 }), getCategories()]);
-  return [
-    { url: base },
-    ...cats.map((c) => ({ url: `${base}/categoria/${c.slug}` })),
-    ...arts.map((a) => ({ url: `${base}/articolo/${a.slug}`, lastModified: a.published_at })),
-  ];
+export const revalidate = 3600;
+
+export async function generateSitemaps() {
+  let n = 1;
+  if (hasSupabase) {
+    const sb = supabasePublic();
+    const { count } = await sb.from("articles").select("id", { count: "exact", head: true }).eq("published", true);
+    n = Math.max(1, Math.ceil((count ?? 0) / 1000));
+  }
+  // id 0 = pagine e categorie, poi un file ogni 1000 articoli
+  return Array.from({ length: n + 1 }, (_, id) => ({ id }));
+}
+
+export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+  if (Number(id) === 0) {
+    const cats = await getCategories();
+    return [{ url: SITE_URL }, { url: `${SITE_URL}/mercato` }, ...cats.map((c) => ({ url: `${SITE_URL}/category/${c.slug}` }))];
+  }
+  const rows = await getSlugChunk(Number(id) - 1);
+  return rows.map((r) => ({ url: `${SITE_URL}/${r.slug}`, lastModified: r.updated_at ?? r.published_at }));
 }
