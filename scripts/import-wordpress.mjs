@@ -108,13 +108,13 @@ async function main() {
       const title = decode(p.title.rendered);
       const media = p._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
       const cover = fixImg(media || y.og_image?.[0]?.url || null);
-      const excerpt = strip(p.excerpt?.rendered);
       const metaTitle = y.title && y.title !== title ? decode(y.title) : null;
       return {
         wp_id: p.id,
         slug: p.slug,
         title,
-        excerpt: excerpt && excerpt.length > 3 ? excerpt.slice(0, 400) : null,
+        // l'excerpt di WordPress è generato dall'inizio del testo: mostrarlo come occhiello duplicherebbe il primo paragrafo
+        excerpt: null,
         content: cleanHtml(p.content.rendered),
         image_url: cover,
         category_id: p.categories.map((id) => catByWpId.get(id)).find(Boolean) ?? fallbackCat,
