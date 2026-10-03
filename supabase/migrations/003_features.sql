@@ -13,6 +13,7 @@ drop policy if exists "admin pagine" on pages;
 drop policy if exists "admin categorie" on categories;
 drop policy if exists "admin impostazioni" on settings;
 drop policy if exists "admin legge iscritti" on subscribers;
+drop policy if exists "admin gestisce iscritti" on subscribers;
 create policy "admin pagine" on pages for all to authenticated using (is_admin()) with check (is_admin());
 create policy "admin categorie" on categories for all to authenticated using (is_admin()) with check (is_admin());
 create policy "admin impostazioni" on settings for all to authenticated using (is_admin()) with check (is_admin());
