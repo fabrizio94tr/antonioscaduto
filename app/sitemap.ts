@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getCategories, getSlugChunk } from "@/lib/data";
+import { getCategories, getHotTags, getSlugChunk } from "@/lib/data";
 import { SITE_URL } from "@/lib/seo";
 import { hasSupabase, supabasePublic } from "@/lib/supabase";
 
@@ -18,8 +18,12 @@ export async function generateSitemaps() {
 
 export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
   if (Number(id) === 0) {
-    const cats = await getCategories();
-    return [{ url: SITE_URL }, { url: `${SITE_URL}/mercato` }, ...cats.map((c) => ({ url: `${SITE_URL}/category/${c.slug}` }))];
+    const [cats, tags] = await Promise.all([getCategories(), getHotTags(300)]);
+    return [
+      { url: SITE_URL }, { url: `${SITE_URL}/mercato` },
+      ...cats.map((c) => ({ url: `${SITE_URL}/category/${c.slug}` })),
+      ...tags.filter((t) => t.n >= 3).map((t) => ({ url: `${SITE_URL}/tag/${t.slug}` })),
+    ];
   }
   const rows = await getSlugChunk(Number(id) - 1);
   return rows.map((r) => ({ url: `${SITE_URL}/${r.slug}`, lastModified: r.updated_at ?? r.published_at }));

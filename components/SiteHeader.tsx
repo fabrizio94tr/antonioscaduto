@@ -2,7 +2,9 @@ import Link from "next/link";
 import { getCategories } from "@/lib/data";
 import { getSettings } from "@/lib/settings";
 import ThemeToggle from "./ThemeToggle";
+import PushButton from "./PushButton";
 import Ticker from "./Ticker";
+import { scoresEnabled } from "@/lib/scores";
 
 export default async function SiteHeader() {
   const [allCats, settings] = await Promise.all([getCategories(), getSettings()]);
@@ -19,6 +21,7 @@ export default async function SiteHeader() {
             <form action="/cerca" className="mini-search" role="search">
               <input type="search" name="q" placeholder="Cerca…" aria-label="Cerca" />
             </form>
+            {process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && <PushButton vapid={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY} />}
             <ThemeToggle />
           </div>
         </div>
@@ -27,6 +30,7 @@ export default async function SiteHeader() {
         <div className="wrap">
           <ul>
             <li><Link href="/mercato" className="live">● Mercato Live</Link></li>
+            {scoresEnabled && <li><Link href="/risultati">Risultati</Link></li>}
             {cats.map((c) => (
               <li key={c.id}>
                 <Link href={`/category/${c.slug}`}>{c.name}</Link>

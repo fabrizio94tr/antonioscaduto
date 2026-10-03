@@ -1,16 +1,18 @@
 import Link from "next/link";
 import Cover from "@/components/Cover";
+import AdSlot from "@/components/AdSlot";
 import Newsletter from "@/components/Newsletter";
-import { fmtLong, fmtStamp, getArticles, getMostRead } from "@/lib/data";
+import { fmtLong, fmtStamp, getArticles, getHotTags, getMostRead } from "@/lib/data";
 
 export const revalidate = 60;
 
 export default async function Home() {
-  const [all, editoriali, focus, mostRead] = await Promise.all([
+  const [all, editoriali, focus, mostRead, hotTags] = await Promise.all([
     getArticles({ limit: 40 }),
     getArticles({ category: "editoriale", limit: 4 }),
     getArticles({ featured: true, limit: 8 }),
     getMostRead(5),
+    getHotTags(14),
   ]);
   const heroes = focus.length >= 4 ? focus.slice(0, 4) : all.slice(0, 4);
   const [main, ...side] = heroes;
@@ -44,6 +46,15 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {hotTags.length > 0 && (
+        <nav className="chips hot" aria-label="Argomenti">
+          <strong>Argomenti:</strong>
+          {hotTags.map((t) => <Link key={t.slug} href={`/tag/${t.slug}`}>{t.name}</Link>)}
+        </nav>
+      )}
+
+      <AdSlot slot="home" />
 
       <div className="cols">
         <section>
@@ -86,6 +97,7 @@ export default async function Home() {
               </ol>
             </>
           )}
+          <AdSlot slot="sidebar" />
           <Newsletter />
           <div className="box">
             <h2 className="tag">Chi è Antonio Scaduto</h2>

@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { slugify } from "@/lib/slug";
+import { sendPush } from "@/lib/push";
+import { SITE_URL } from "@/lib/seo";
 import { supabaseServer } from "@/lib/supabase";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
@@ -12,6 +14,13 @@ async function requireUser() {
   const sb = await supabaseServer();
   const { data } = await sb.auth.getUser();
   if (!data.user) redirect("/admin/login");
+  return sb;
+}
+
+async function requireAdmin() {
+  const sb = await requireUser();
+  const { data } = await sb.auth.getUser();
+  if ((data.user?.app_metadata as { role?: string } | undefined)?.role === "editor") redirect("/admin?permessi=1");
   return sb;
 }
 
@@ -63,10 +72,20 @@ export async function saveArticle(_prev: SaveState, formData: FormData): Promise
     noindex: formData.get("noindex") === "on",
     focus_keyword: nul(formData, "focus_keyword"),
   };
-  const { error } = id ? await sb.from("articles").update(row).eq("id", id) : await sb.from("articles").insert(row);
+  const { data: saved, error } = id
+    ? await sb.from("articles").update(row).eq("id", id).select("id,notified").single()
+    : await sb.from("articles").insert(row).select("id,notified").single();
   if (error) {
     return { error: error.code === "23505" ? "Esiste già un articolo con questo slug (URL). Cambialo." : error.message };
   }
+  // notifica push una sola volta per gli articoli "ultim'ora" già in uscita
+  if (row.published && row.breaking && saved && !saved.notified && new Date(row.published_at) <= new Date()) {
+    try {
+      await sendPush({ title: row.title, body: row.excerpt ?? undefined, path: `/${slug}` });
+      await sb.from("articles").update({ notified: true }).eq("id", saved.id);
+    } catch { /* la notifica non deve bloccare il salvataggio */ }
+  }
+  await sb.rpc("refresh_tag_index");
   refresh();
   redirect("/admin/articoli?salvato=1");
 }
@@ -80,7 +99,7 @@ export async function deleteArticle(formData: FormData) {
 
 /* ---------- pagine ---------- */
 export async function savePage(formData: FormData) {
-  const sb = await requireUser();
+  const sb = await requireAdmin();
   const original = str(formData, "original_slug");
   const title = str(formData, "title");
   const slug = (slugify(str(formData, "slug") || title)) || "pagina";
@@ -98,7 +117,7 @@ export async function savePage(formData: FormData) {
 }
 
 export async function deletePage(formData: FormData) {
-  const sb = await requireUser();
+  const sb = await requireAdmin();
   await sb.from("pages").delete().eq("slug", str(formData, "slug"));
   refresh();
   redirect("/admin/pagine");
@@ -106,7 +125,7 @@ export async function deletePage(formData: FormData) {
 
 /* ---------- categorie ---------- */
 export async function saveCategory(formData: FormData) {
-  const sb = await requireUser();
+  const sb = await requireAdmin();
   const row = {
     name: str(formData, "name"),
     position: parseInt(str(formData, "position"), 10) || 0,
@@ -151,10 +170,80 @@ export async function deleteTransfer(formData: FormData) {
 
 /* ---------- impostazioni ---------- */
 export async function saveSettings(formData: FormData) {
-  const sb = await requireUser();
-  const keys = ["site_title", "tagline", "meta_description", "og_image", "contact_email", "facebook", "instagram", "x", "youtube", "telegram"];
+  const sb = await requireAdmin();
+  const keys = ["site_title", "tagline", "meta_description", "og_image", "contact_email", "facebook", "instagram", "x", "youtube", "telegram", "ga_id", "gsc_verification", "adsense_client", "ad_slot_article", "ad_slot_sidebar", "ad_slot_home", "sponsor_image", "sponsor_link", "newsletter_from"];
   const rows = keys.map((key) => ({ key, value: str(formData, key) }));
   await sb.from("settings").upsert(rows);
   refresh();
   redirect("/admin/impostazioni?salvato=1");
+}
+
+/* ---------- commenti ---------- */
+export async function moderateComment(formData: FormData) {
+  const sb = await requireUser();
+  const id = str(formData, "id");
+  if (str(formData, "op") === "approve") await sb.from("comments").update({ approved: true }).eq("id", id);
+  else await sb.from("comments").delete().eq("id", id);
+  revalidatePath("/admin/commenti");
+  redirect("/admin/commenti");
+}
+
+/* ---------- cronologia ---------- */
+export async function restoreRevision(formData: FormData) {
+  const sb = await requireUser();
+  const { data: rev } = await sb.from("article_revisions").select("*").eq("id", str(formData, "id")).maybeSingle();
+  if (!rev) redirect("/admin/articoli");
+  await sb.from("articles").update({
+    title: rev.title, excerpt: rev.excerpt, content: rev.content, meta_title: rev.meta_title, meta_description: rev.meta_description,
+  }).eq("id", rev.article_id);
+  refresh();
+  redirect(`/admin/articoli/${rev.article_id}?ripristinato=1`);
+}
+
+/* ---------- newsletter ---------- */
+export async function sendNewsletter(formData: FormData) {
+  const sb = await requireAdmin();
+  const key = process.env.RESEND_API_KEY;
+  if (!key) redirect("/admin/newsletter?esito=" + encodeURIComponent("Invio non configurato: manca RESEND_API_KEY su Vercel."));
+  const subject = str(formData, "subject");
+  const intro = str(formData, "intro");
+  const ids = formData.getAll("article").map(String);
+  if (!subject || !ids.length) redirect("/admin/newsletter?esito=" + encodeURIComponent("Servono oggetto e almeno un articolo."));
+
+  const { data: arts } = await sb.from("articles").select("title,slug,image_url,meta_description").in("id", ids).order("published_at", { ascending: false });
+  const { data: st } = await sb.from("settings").select("key,value").in("key", ["site_title", "newsletter_from", "contact_email"]);
+  const cfg = Object.fromEntries((st ?? []).map((r) => [r.key, r.value]));
+  const from = cfg.newsletter_from;
+  if (!from) redirect("/admin/newsletter?esito=" + encodeURIComponent("Imposta il mittente in Impostazioni → Newsletter."));
+
+  const test = str(formData, "op") === "test";
+  const { data: u } = await sb.auth.getUser();
+  const { data: subs } = test
+    ? { data: [{ email: u.user!.email!, token: "00000000-0000-0000-0000-000000000000" }] }
+    : await sb.from("subscribers").select("email,token");
+
+  const esc = (t: string) => t.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" })[c]!);
+  const body = (token: string) => `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#111">
+<h1 style="font-size:22px;border-bottom:3px solid #d90429;padding-bottom:8px">${esc(cfg.site_title ?? "Antonio Scaduto")}</h1>
+${intro ? `<p style="font-size:16px;line-height:1.5">${esc(intro).replace(/\n/g, "<br>")}</p>` : ""}
+${(arts ?? []).map((a) => `<div style="margin:18px 0;border-bottom:1px solid #eee;padding-bottom:14px">
+${a.image_url ? `<a href="${SITE_URL}/${a.slug}"><img src="${a.image_url}" alt="" style="width:100%;height:auto;border-radius:4px"></a>` : ""}
+<h2 style="font-size:18px;margin:8px 0"><a href="${SITE_URL}/${a.slug}" style="color:#111;text-decoration:none">${esc(a.title)}</a></h2>
+${a.meta_description ? `<p style="color:#555;font-size:14px;margin:0">${esc(a.meta_description)}</p>` : ""}</div>`).join("")}
+<p style="font-size:12px;color:#888">Ricevi questa email perché ti sei iscritto alla newsletter. <a href="${SITE_URL}/disiscrizione?t=${token}">Disiscriviti</a></p></div>`;
+
+  let sent = 0;
+  const list = subs ?? [];
+  for (let i = 0; i < list.length; i += 100) {
+    const batch = list.slice(i, i + 100).map((r) => ({
+      from, to: [r.email], subject: test ? `[PROVA] ${subject}` : subject, html: body(r.token),
+      headers: { "List-Unsubscribe": `<${SITE_URL}/disiscrizione?t=${r.token}>` },
+    }));
+    const res = await fetch("https://api.resend.com/emails/batch", {
+      method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify(batch),
+    });
+    if (!res.ok) redirect("/admin/newsletter?esito=" + encodeURIComponent(`Errore Resend (${res.status}) dopo ${sent} invii: ${(await res.text()).slice(0, 150)}`));
+    sent += batch.length;
+  }
+  redirect("/admin/newsletter?esito=" + encodeURIComponent(test ? "Email di prova inviata a te." : `Newsletter inviata a ${sent} iscritti.`));
 }

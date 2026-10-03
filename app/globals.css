@@ -260,3 +260,30 @@ textarea.source { min-height: 420px; font-family: ui-monospace, monospace !impor
   .stats { grid-template-columns: 1fr 1fr; }
   .panel-main { padding: 16px; }
 }
+
+/* cookie banner e pubblicità */
+.consent { position: fixed; left: 12px; right: 12px; bottom: 12px; max-width: 760px; margin: 0 auto; background: #111; color: #eee; padding: 16px; z-index: 1000; border-radius: 8px; font-size: .88rem; box-shadow: 0 6px 30px rgba(0,0,0,.4); display: grid; gap: 10px; }
+.consent a { text-decoration: underline; }
+.consent-opts { display: flex; gap: 16px; flex-wrap: wrap; }
+.consent-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.consent-btns button { font: inherit; font-weight: 700; padding: 8px 14px; border: 1px solid #666; background: transparent; color: #fff; cursor: pointer; border-radius: 4px; }
+.consent-btns .primary { background: var(--accent); border-color: var(--accent); }
+.ad { margin: 18px 0; text-align: center; min-height: 20px; }
+.ad small { display: block; font-size: .65rem; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.footer .linklike { color: #fff; }
+.chips.hot { align-items: center; margin-top: 16px; }
+.chips.hot a { font-size: .8rem; padding: 3px 12px; }
+.comment-list { list-style: none; }
+.comment-list li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.comment-list time { font-size: .75rem; color: var(--muted); margin-left: 6px; }
+.comment-form { display: grid; gap: 8px; margin-top: 16px; }
+.comment-form input, .comment-form textarea { font: inherit; padding: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; }
+.hp { position: absolute; left: -9999px; }
+.notice.ok { background: #e6f6ea; border: 1px solid #9fd3ac; color: #111; padding: 10px; margin-bottom: 10px; }
+.match { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; font-weight: 600; }
+.match span:last-child { text-align: right; }
+.match b { min-width: 60px; text-align: center; }
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 160px; background: #fff; padding: 12px; border-radius: 8px; margin: 12px 0 20px; }
+.bar { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
+.bar span { width: 100%; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; }
+.bar small { font-size: .65rem; color: #777; }

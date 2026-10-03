@@ -19,9 +19,10 @@ export async function middleware(req: NextRequest) {
   });
   const { data } = await sb.auth.getUser();
   const isLogin = req.nextUrl.pathname === "/admin/login";
+  if (!data.user && req.nextUrl.pathname.startsWith("/anteprima")) return NextResponse.redirect(new URL("/admin/login", req.url));
   if (!data.user && !isLogin) return NextResponse.redirect(new URL("/admin/login", req.url));
   if (data.user && isLogin) return NextResponse.redirect(new URL("/admin", req.url));
   return res;
 }
 
-export const config = { matcher: ["/admin/:path*"] };
+export const config = { matcher: ["/admin/:path*", "/anteprima/:path*"] };

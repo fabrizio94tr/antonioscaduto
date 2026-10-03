@@ -130,3 +130,48 @@ const dtf = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("it-IT", 
 export const fmtStamp = (iso: string) =>
   `${dtf({ day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(iso))} | ${dtf({ hour: "2-digit", minute: "2-digit" }).format(new Date(iso))}`;
 export const fmtLong = (iso: string) => dtf({ dateStyle: "full", timeStyle: "short" }).format(new Date(iso));
+
+/* ---------- tag / squadre ---------- */
+export type Tag = { slug: string; name: string; n: number };
+
+export async function getHotTags(limit = 14): Promise<Tag[]> {
+  if (!hasSupabase) return [];
+  const { data } = await supabasePublic().from("tag_index").select("*").order("n", { ascending: false }).limit(limit);
+  return (data as Tag[]) ?? [];
+}
+
+export async function getTag(slug: string): Promise<Tag | null> {
+  if (!hasSupabase) return null;
+  const { data } = await supabasePublic().from("tag_index").select("*").eq("slug", slug).maybeSingle();
+  return (data as Tag) ?? null;
+}
+
+export async function getArticlesByTag(name: string, page = 1, limit = 30): Promise<Article[]> {
+  const { data } = await supabasePublic()
+    .from("articles").select("id,slug,title,published_at,image_url,category:categories(name,slug)")
+    .eq("published", true).lte("published_at", nowIso()).contains("tags", [name])
+    .order("published_at", { ascending: false }).range((page - 1) * limit, page * limit - 1);
+  return (data as unknown as Article[]) ?? [];
+}
+
+/* ---------- Google News ---------- */
+export async function getRecentForNews() {
+  if (!hasSupabase) return demoArticles.map((a) => ({ slug: a.slug, title: a.title, published_at: a.published_at }));
+  const since = new Date(Date.now() - 48 * 36e5).toISOString();
+  const { data } = await supabasePublic()
+    .from("articles").select("slug,title,published_at")
+    .eq("published", true).eq("noindex", false).gte("published_at", since).lte("published_at", nowIso())
+    .order("published_at", { ascending: false }).limit(1000);
+  return data ?? [];
+}
+
+/* ---------- commenti ---------- */
+export type Comment = { id: string; author: string; body: string; created_at: string };
+
+export async function getComments(articleId: string): Promise<Comment[]> {
+  if (!hasSupabase) return [];
+  const { data } = await supabasePublic()
+    .from("comments").select("id,author,body,created_at").eq("article_id", articleId).eq("approved", true)
+    .order("created_at", { ascending: true }).limit(200);
+  return (data as Comment[]) ?? [];
+}

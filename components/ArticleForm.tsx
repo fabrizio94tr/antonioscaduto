@@ -29,7 +29,24 @@ export default function ArticleForm({ article, categories, siteTitle }: { articl
   const [metaDesc, setMetaDesc] = useState(article?.meta_description ?? "");
   const [ogImage, setOgImage] = useState(article?.og_image_url ?? "");
   const [kw, setKw] = useState(article?.focus_keyword ?? "");
+  const [tags, setTags] = useState(article?.tags?.join(", ") ?? "");
   const [uploading, setUploading] = useState<"" | "cover" | "og">("");
+  const [aiBusy, setAiBusy] = useState(false);
+
+  const suggest = async () => {
+    setAiBusy(true);
+    try {
+      const r = await fetch("/api/admin/ai-seo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title, content, category: categories.find((c) => c.id === (document.querySelector<HTMLSelectElement>("[name=category_id]")?.value ?? ""))?.name }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error);
+      setMetaTitle(j.meta_title); setMetaDesc(j.meta_description); setKw(j.focus_keyword);
+      if (!tags.trim()) setTags((j.tags as string[]).join(", "));
+    } catch (e) {
+      alert((e as Error).message);
+    } finally {
+      setAiBusy(false);
+    }
+  };
 
   const onTitle = (v: string) => {
     setTitle(v);
@@ -73,6 +90,7 @@ export default function ArticleForm({ article, categories, siteTitle }: { articl
 
           <details className="card-box" open>
             <summary>SEO</summary>
+            <button type="button" className="btn ghost" onClick={suggest} disabled={aiBusy} style={{ marginBottom: 10 }}>{aiBusy ? "Sto pensando…" : "✨ Suggerisci titolo SEO, descrizione e tag con l'AI"}</button>
             <div className="seo-grid">
               <div className="f">
                 <label>Parola chiave principale
@@ -127,7 +145,7 @@ export default function ArticleForm({ article, categories, siteTitle }: { articl
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <label>Tag <small>(separati da virgola)</small>
-              <input type="text" name="tags" defaultValue={article?.tags?.join(", ") ?? ""} placeholder="Milan, Serie A" />
+              <input type="text" name="tags" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Milan, Serie A" />
             </label>
             <label>Autore
               <input type="text" name="author_name" defaultValue={article?.author_name ?? "Antonio Scaduto"} />

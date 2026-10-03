@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Pagination from "@/components/Pagination";
 import { fmtStamp, searchArticles } from "@/lib/data";
+import { hasSupabase, supabasePublic } from "@/lib/supabase";
 
 export const metadata: Metadata = { title: "Cerca", robots: { index: false, follow: true } };
 const SIZE = 30;
@@ -13,6 +14,9 @@ export default async function Cerca({ searchParams }: { searchParams: Promise<{ 
   const found = await searchArticles(q, SIZE + 1, page);
   const results = found.slice(0, SIZE);
   const hasMore = found.length > SIZE;
+  if (hasSupabase && page === 1 && q.trim().length >= 2) {
+    await supabasePublic().from("search_log").insert({ q: q.trim().toLowerCase().slice(0, 100), results: results.length });
+  }
   return (
     <main className="wrap">
       <h1 className="page-title">Cerca</h1>

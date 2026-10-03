@@ -10,6 +10,7 @@ const links = [
 ];
 
 
+import CookieButton from "./CookieButton";
 import { getSettings } from "@/lib/settings";
 
 export default async function SiteFooter() {
@@ -27,6 +28,7 @@ export default async function SiteFooter() {
           {socials.map(([k, n]) => (
             <li key={k}><a href={s[k]} target="_blank" rel="noopener noreferrer">{n}</a></li>
           ))}
+          {(s.ga_id || s.adsense_client) && <li><CookieButton /></li>}
           <li><a href="/feed.xml">RSS</a></li>
         </ul>
         <p>Copyright © {new Date().getFullYear()} {s.site_title}. Tutti i diritti riservati.</p>

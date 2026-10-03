@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { IS_STAGING, SITE_URL } from "@/lib/seo";
+import Consent from "@/components/Consent";
 import { getSettings } from "@/lib/settings";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,11 +13,13 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: IS_STAGING ? { index: false, follow: false } : undefined,
     openGraph: { siteName: s.site_title, locale: "it_IT", type: "website", images: s.og_image ? [s.og_image] : undefined },
     twitter: { card: "summary_large_image" },
+    verification: s.gsc_verification ? { google: s.gsc_verification } : undefined,
     alternates: { canonical: "/", types: { "application/rss+xml": "/feed.xml" } },
   };
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const s = await getSettings();
   return (
     <html lang="it" suppressHydrationWarning>
       <head>
@@ -27,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
+        <Consent gaId={s.ga_id} adsClient={s.adsense_client} />
       </body>
     </html>
   );
