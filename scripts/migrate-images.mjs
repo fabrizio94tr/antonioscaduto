@@ -19,7 +19,7 @@ if (!SB || !KEY) { console.error("Servono SUPABASE_URL e SUPABASE_SERVICE_ROLE_K
 const arg = (n) => { const i = process.argv.indexOf(`--${n}`); return i > -1 ? process.argv[i + 1] : undefined; };
 const LIMIT = arg("limit") ? parseInt(arg("limit"), 10) : Infinity;
 const CONTENT = process.argv.includes("--content");
-const CONC = 6;
+const CONC = parseInt(process.env.CONCURRENCY ?? "24", 10);
 const H = { apikey: KEY, Authorization: `Bearer ${KEY}` };
 
 const cache = new Map(); // url vecchio → url nuovo (evita di rifare la stessa immagine)
@@ -65,7 +65,7 @@ async function main() {
   const filter = CONTENT ? `or=(image_url.like.*${OLD}*,og_image_url.like.*${OLD}*,content.like.*${OLD}*)` : `or=(image_url.like.*${OLD}*,og_image_url.like.*${OLD}*)`;
   let last = "00000000-0000-0000-0000-000000000000", done = 0, failed = 0;
   while (done + failed < LIMIT) {
-    const r = await fetch(`${SB}/rest/v1/articles?select=${cols}&${filter}&id=gt.${last}&order=id&limit=60`, { headers: H });
+    const r = await fetch(`${SB}/rest/v1/articles?select=${cols}&${filter}&id=gt.${last}&order=id&limit=${CONC * 3}`, { headers: H });
     if (!r.ok) throw new Error(`lettura ${r.status} ${await r.text()}`);
     const rows = await r.json();
     if (!rows.length) break;
