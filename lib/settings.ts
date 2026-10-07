@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: Settings = {
   author_bio: "Segue il calcio a 360 gradi da anni: dalle serie minori alla Serie A, con un occhio sempre aperto sul mercato.",
   author_photo: "",
   logo_spin: "",
+  intro: "",
 };
 
 export const getSettings = cache(async function getSettings(): Promise<Settings> {
@@ -21,5 +22,6 @@ export const getSettings = cache(async function getSettings(): Promise<Settings>
   const { data } = await sb.from("settings").select("key,value");
   const out = { ...DEFAULT_SETTINGS };
   for (const r of data ?? []) if (r.value !== "") out[r.key] = r.value;
+  if (process.env.INTRO_PREVIEW === "1") out.intro = "1"; // solo per provare l'intro in locale
   return out;
 });

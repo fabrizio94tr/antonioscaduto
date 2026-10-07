@@ -405,3 +405,38 @@ main { animation: pageIn .4s ease both; }
   .timeline li { grid-template-columns: 1fr; gap: 2px; }
   .edit-strip { flex-wrap: wrap; }
 }
+
+/* ===== intro di apertura: calcio al pallone ===== */
+.intro-splash { display: none; position: fixed; inset: 0; z-index: 5000; place-items: center; overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, #14532f 0%, #0f3d24 55%, #07170e 100%);
+  animation: introOut .5s ease 2.05s forwards; }
+.intro-on .intro-splash { display: grid; }
+@keyframes introOut { to { opacity: 0; visibility: hidden; } }
+.intro-stage { position: relative; width: 26em; height: 19.5em; font-size: clamp(10px, 3.4vw, 20px); }
+.intro-title { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; animation: introTitle .6s ease .1s both; }
+.intro-title span { display: block; font-family: var(--font-display); font-size: 3.1em; line-height: 1; letter-spacing: .02em; color: var(--neon); text-transform: uppercase; }
+.intro-title small { display: block; font-family: var(--font-mono); font-size: .62em; letter-spacing: .26em; color: rgba(46, 230, 107, .7); margin-top: .5em; text-transform: uppercase; }
+@keyframes introTitle { from { opacity: 0; transform: translateY(1em); letter-spacing: .12em; } }
+/* perno del piede a (7.5em, 2.4em); pallone sul prato a (13.25em, 9.9em) */
+.intro-boot { overflow: visible; position: absolute; left: 4.95em; top: -.6em; width: 7.5em; height: 12.5em; transform-origin: 2.55em 3em; animation: introKick 1.9s linear both; }
+@keyframes introKick {
+  0% { transform: rotate(78deg); opacity: 0; animation-timing-function: ease-out; }
+  16% { transform: rotate(50deg); opacity: 1; animation-timing-function: ease-in-out; }
+  42% { transform: rotate(58deg); animation-timing-function: cubic-bezier(.7, 0, .95, .35); }
+  56% { transform: rotate(-8deg); animation-timing-function: ease-out; }
+  76% { transform: rotate(-52deg); opacity: 1; }
+  100% { transform: rotate(-72deg); opacity: 0; }
+}
+.intro-shadow { position: absolute; left: 11.4em; top: 12.45em; width: 3.7em; height: .7em; border-radius: 50%; background: rgba(0, 0, 0, .35); filter: blur(2px); animation: introShadow 1.2s linear both; }
+@keyframes introShadow { 0% { opacity: 0; } 20% { opacity: 1; } 87% { opacity: 1; } 100% { opacity: 0; } }
+.intro-ball { position: absolute; left: 11.95em; top: 9.05em; width: 2.6em; height: 2.6em; color: #fff; animation: introBall 1.25s cubic-bezier(.25, .1, .3, 1) 1.06s both; }
+@keyframes introBall {
+  0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0); }
+  15% { transform: translate(1.2em, -3.2em) scale(1.3) rotate(140deg); }
+  35% { transform: translate(.4em, -5em) scale(1.8) rotate(300deg); }
+  60% { transform: translate(-.2em, -2.5em) scale(4.5) rotate(480deg); }
+  100% { opacity: 1; transform: translate(-.25em, -1.4em) scale(18) rotate(720deg); }
+}
+.intro-skip { position: absolute; right: 18px; bottom: 18px; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .7); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .2); padding: 7px 14px; border-radius: 99px; }
+.intro-skip:hover { color: var(--neon); border-color: var(--neon); }
+@media (prefers-reduced-motion: reduce) { .intro-on .intro-splash { display: none; } }

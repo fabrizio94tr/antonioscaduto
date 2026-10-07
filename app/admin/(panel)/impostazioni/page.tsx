@@ -39,6 +39,14 @@ export default async function Settings({ searchParams }: { searchParams: Promise
                 </select>
               </label>
             )}
+            {g.title === "Sito" && (
+              <label>Intro animata all&apos;apertura (un piede calcia il pallone)
+                <select name="intro" defaultValue={s.intro === "1" ? "1" : ""}>
+                  <option value="">No</option>
+                  <option value="1">Sì, una volta per visita (si può saltare)</option>
+                </select>
+              </label>
+            )}
             {g.title === "Sito" && <label>Meta description della home<textarea name="meta_description" rows={3} defaultValue={s.meta_description} /></label>}
           </fieldset>
         ))}
