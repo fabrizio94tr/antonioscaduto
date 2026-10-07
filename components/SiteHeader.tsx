@@ -23,7 +23,7 @@ export default async function SiteHeader() {
         <div className="hdr-top">
           <div className="wrap hdr-in">
             <Link href="/" className="logo" aria-label={`${settings.site_title} – home`}>
-              <LogoBall />
+              <LogoBall mode={settings.logo_spin === "kick" ? "kick" : settings.logo_spin === "spin" || settings.logo_spin === "1" ? "spin" : ""} />
               {settings.site_title}
             </Link>
             <div className="tools">

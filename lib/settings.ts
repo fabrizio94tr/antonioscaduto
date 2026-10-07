@@ -12,6 +12,7 @@ export const DEFAULT_SETTINGS: Settings = {
   author_name: "Antonio Scaduto",
   author_bio: "Segue il calcio a 360 gradi da anni: dalle serie minori alla Serie A, con un occhio sempre aperto sul mercato.",
   author_photo: "",
+  logo_spin: "",
 };
 
 export const getSettings = cache(async function getSettings(): Promise<Settings> {

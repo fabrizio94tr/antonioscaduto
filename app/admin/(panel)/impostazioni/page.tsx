@@ -30,6 +30,15 @@ export default async function Settings({ searchParams }: { searchParams: Promise
             <legend><b>{g.title}</b></legend>
             {g.hint && <p className="updated">{g.hint}</p>}
             {g.fields.map(([k, label]) => <label key={k}>{label}<input type="text" name={k} defaultValue={s[k] ?? ""} /></label>)}
+            {g.title === "Sito" && (
+              <label>Animazione del pallone nel logo
+                <select name="logo_spin" defaultValue={s.logo_spin === "1" ? "spin" : s.logo_spin}>
+                  <option value="">Fermo</option>
+                  <option value="spin">Rotola mentre scorri la pagina</option>
+                  <option value="kick">Palleggia (all&apos;apertura e al passaggio del mouse)</option>
+                </select>
+              </label>
+            )}
             {g.title === "Sito" && <label>Meta description della home<textarea name="meta_description" rows={3} defaultValue={s.meta_description} /></label>}
           </fieldset>
         ))}
