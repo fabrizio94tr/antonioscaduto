@@ -406,36 +406,72 @@ main { animation: pageIn .4s ease both; }
   .edit-strip { flex-wrap: wrap; }
 }
 
-/* ===== intro di apertura: calcio al pallone ===== */
+/* ===== intro di apertura: il pallone rimbalza, rotola a sinistra e diventa il logo ===== */
 .intro-splash { display: none; position: fixed; inset: 0; z-index: 5000; place-items: center; overflow: hidden;
-  background: radial-gradient(circle at 50% 42%, #14532f 0%, #0f3d24 55%, #07170e 100%);
-  animation: introOut .5s ease 2.05s forwards; }
+  background: radial-gradient(ellipse at 50% 46%, #17603a 0%, #0f3d24 42%, #061a0f 100%);
+  animation: introOut .5s ease 3s forwards; }
 .intro-on .intro-splash { display: grid; }
 @keyframes introOut { to { opacity: 0; visibility: hidden; } }
-.intro-stage { position: relative; width: 26em; height: 19.5em; font-size: clamp(10px, 3.4vw, 20px); }
-.intro-title { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; animation: introTitle .6s ease .1s both; }
-.intro-title span { display: block; font-family: var(--font-display); font-size: 3.1em; line-height: 1; letter-spacing: .02em; color: var(--neon); text-transform: uppercase; }
-.intro-title small { display: block; font-family: var(--font-mono); font-size: .62em; letter-spacing: .26em; color: rgba(46, 230, 107, .7); margin-top: .5em; text-transform: uppercase; }
-@keyframes introTitle { from { opacity: 0; transform: translateY(1em); letter-spacing: .12em; } }
-/* perno del piede a (7.5em, 2.4em); pallone sul prato a (13.25em, 9.9em) */
-.intro-boot { overflow: visible; position: absolute; left: 4.95em; top: -.6em; width: 7.5em; height: 12.5em; transform-origin: 2.55em 3em; animation: introKick 1.9s linear both; }
-@keyframes introKick {
-  0% { transform: rotate(78deg); opacity: 0; animation-timing-function: ease-out; }
-  16% { transform: rotate(50deg); opacity: 1; animation-timing-function: ease-in-out; }
-  42% { transform: rotate(58deg); animation-timing-function: cubic-bezier(.7, 0, .95, .35); }
-  56% { transform: rotate(-8deg); animation-timing-function: ease-out; }
-  76% { transform: rotate(-52deg); opacity: 1; }
-  100% { transform: rotate(-72deg); opacity: 0; }
+/* strisce del prato appena accennate, sfumate verso i bordi */
+.intro-splash::before { content: ""; position: absolute; inset: 0; opacity: .045;
+  background: repeating-linear-gradient(90deg, #fff 0 9vw, transparent 9vw 18vw);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 55%, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse at 50% 55%, #000 0%, transparent 70%); }
+.is-center { position: relative; display: grid; justify-items: center; gap: .9rem; padding: 0 16px; }
+.is-logo { position: relative; display: flex; align-items: center; font-family: var(--font-display); font-size: clamp(2.3rem, 8.4vw, 5.6rem); line-height: 1; letter-spacing: .01em; color: var(--neon); white-space: nowrap; }
+.is-text { padding-left: 1.22em; text-shadow: 0 0 .5em rgba(46, 230, 107, .3); }
+.is-text span { display: inline-block; animation: isLetter .5s cubic-bezier(.2, .9, .3, 1.25) calc(1.9s + var(--i) * .035s) both; }
+@keyframes isLetter { from { opacity: 0; transform: translateY(.35em) scale(.9); filter: blur(4px); } }
+.is-tagline { font-family: var(--font-mono); font-size: clamp(.68rem, 1.7vw, .95rem); letter-spacing: .3em; text-transform: uppercase; color: rgba(232, 245, 236, .75); animation: isTag .6s ease 2.45s both; }
+@keyframes isTag { from { opacity: 0; transform: translateY(8px); letter-spacing: .5em; } }
+/* pallone: parte al centro della scritta, a fine rimbalzi rotola fino al suo posto nel logo */
+.is-ballx { position: absolute; top: 50%; left: calc(50% - .475em); width: .95em; height: .95em; margin-top: -.475em;
+  animation: isRoll .6s cubic-bezier(.45, 0, .2, 1) 1.45s forwards; }
+@keyframes isRoll { to { left: 0; } }
+.is-shadow { position: absolute; left: 50%; bottom: -.16em; width: 1em; height: .16em; margin-left: -.5em; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, .55), transparent); animation: isShadow 1.4s linear both, isShadowOut .4s ease 1.95s forwards; }
+.is-bally, .is-squash, .is-spin { display: block; width: 100%; height: 100%; }
+.is-spin { color: var(--neon); filter: drop-shadow(0 0 .12em rgba(46, 230, 107, .45)); animation: isSpin 2.05s linear both; }
+.is-squash { transform-origin: 50% 100%; animation: isSquash 1.4s linear both; }
+/* caduta e rimbalzi (restituzione ~0,55): in discesa accelera, in salita rallenta */
+.is-bally { animation: isBounce 1.4s both; }
+@keyframes isBounce {
+  0% { transform: translateY(-62vh); animation-timing-function: cubic-bezier(.55, .085, .68, .53); }
+  30.5% { transform: translateY(0); animation-timing-function: cubic-bezier(.25, .46, .45, .94); }
+  47.2% { transform: translateY(-18.6vh); animation-timing-function: cubic-bezier(.55, .085, .68, .53); }
+  63.9% { transform: translateY(0); animation-timing-function: cubic-bezier(.25, .46, .45, .94); }
+  73.1% { transform: translateY(-5.6vh); animation-timing-function: cubic-bezier(.55, .085, .68, .53); }
+  82.2% { transform: translateY(0); animation-timing-function: cubic-bezier(.25, .46, .45, .94); }
+  87.2% { transform: translateY(-1.7vh); animation-timing-function: cubic-bezier(.55, .085, .68, .53); }
+  92.2%, 100% { transform: translateY(0); }
 }
-.intro-shadow { position: absolute; left: 11.4em; top: 12.45em; width: 3.7em; height: .7em; border-radius: 50%; background: rgba(0, 0, 0, .35); filter: blur(2px); animation: introShadow 1.2s linear both; }
-@keyframes introShadow { 0% { opacity: 0; } 20% { opacity: 1; } 87% { opacity: 1; } 100% { opacity: 0; } }
-.intro-ball { position: absolute; left: 11.95em; top: 9.05em; width: 2.6em; height: 2.6em; color: #fff; animation: introBall 1.25s cubic-bezier(.25, .1, .3, 1) 1.06s both; }
-@keyframes introBall {
-  0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0); }
-  15% { transform: translate(1.2em, -3.2em) scale(1.3) rotate(140deg); }
-  35% { transform: translate(.4em, -5em) scale(1.8) rotate(300deg); }
-  60% { transform: translate(-.2em, -2.5em) scale(4.5) rotate(480deg); }
-  100% { opacity: 1; transform: translate(-.25em, -1.4em) scale(18) rotate(720deg); }
+@keyframes isSquash {
+  0%, 24% { transform: none; }
+  29% { transform: scale(.9, 1.12); }
+  30.5% { transform: scale(1.18, .82); }
+  34% { transform: scale(.95, 1.06); }
+  38%, 61.5% { transform: none; }
+  63.9% { transform: scale(1.14, .86); }
+  67%, 81% { transform: none; }
+  82.2% { transform: scale(1.07, .93); }
+  85%, 91.4% { transform: none; }
+  92.2% { transform: scale(1.03, .97); }
+  94.5%, 100% { transform: none; }
+}
+@keyframes isShadow {
+  0% { transform: scale(.25); opacity: 0; animation-timing-function: ease-in; }
+  30.5% { transform: scale(1.15); opacity: 1; animation-timing-function: ease-out; }
+  47.2% { transform: scale(.65); opacity: .45; animation-timing-function: ease-in; }
+  63.9% { transform: scale(1.1); opacity: 1; animation-timing-function: ease-out; }
+  73.1% { transform: scale(.9); opacity: .75; animation-timing-function: ease-in; }
+  82.2%, 100% { transform: scale(1); opacity: 1; }
+}
+@keyframes isShadowOut { to { opacity: 0; } }
+/* gira un po' mentre rimbalza, poi rotola verso sinistra (senso antiorario) */
+@keyframes isSpin {
+  0% { transform: rotate(-40deg); animation-timing-function: cubic-bezier(.2, .6, .4, 1); }
+  68% { transform: rotate(150deg); }
+  70.7% { transform: rotate(150deg); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  100% { transform: rotate(-270deg); }
 }
 .intro-skip { position: absolute; right: 18px; bottom: 18px; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .7); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .2); padding: 7px 14px; border-radius: 99px; }
 .intro-skip:hover { color: var(--neon); border-color: var(--neon); }
