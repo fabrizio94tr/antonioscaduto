@@ -10,7 +10,7 @@ export default function IntroControl() {
 
   useEffect(() => {
     try { sessionStorage.setItem(KEY, "1"); } catch {}
-    const t = setTimeout(close, 3000);
+    const t = setTimeout(close, 2900);
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
     window.addEventListener("keydown", onKey);
     return () => { clearTimeout(t); window.removeEventListener("keydown", onKey); };

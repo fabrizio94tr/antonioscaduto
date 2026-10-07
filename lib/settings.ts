@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 export const getSettings = cache(async function getSettings(): Promise<Settings> {
-  if (!hasSupabase) return DEFAULT_SETTINGS;
+  if (!hasSupabase) return process.env.INTRO_PREVIEW === "1" ? { ...DEFAULT_SETTINGS, intro: "1" } : DEFAULT_SETTINGS;
   const sb = supabasePublic();
   const { data } = await sb.from("settings").select("key,value");
   const out = { ...DEFAULT_SETTINGS };
