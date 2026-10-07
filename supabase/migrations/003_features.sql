@@ -1,7 +1,8 @@
 -- Migrazione 003: ruoli, tag, commenti, notifiche push, statistiche, cronologia, newsletter, impostazioni extra.
 -- Esegui nello SQL Editor di Supabase DOPO la 002.
 
-create extension if not exists unaccent;
+create schema if not exists extensions;
+create extension if not exists unaccent with schema extensions;
 
 -- ===== Ruoli: "editor" scrive articoli/mercato/commenti; chi non ha ruolo o è "admin" fa tutto =====
 -- Per rendere editor un utente:
@@ -23,12 +24,12 @@ create policy "admin gestisce iscritti" on subscribers for delete to authenticat
 -- ===== Indice dei tag (pagine /tag/nome) =====
 drop materialized view if exists tag_index;
 create materialized view tag_index as
-  select trim(both '-' from regexp_replace(lower(unaccent(t)), '[^a-z0-9]+', '-', 'g')) as slug,
+  select trim(both '-' from regexp_replace(lower(extensions.unaccent(t)), '[^a-z0-9]+', '-', 'g')) as slug,
          min(t) as name, count(*)::int as n
   from articles, unnest(tags) as t
   where published
   group by 1
-  having trim(both '-' from regexp_replace(lower(unaccent(t)), '[^a-z0-9]+', '-', 'g')) <> '';
+  having trim(both '-' from regexp_replace(lower(extensions.unaccent(t)), '[^a-z0-9]+', '-', 'g')) <> '';
 create unique index tag_index_slug on tag_index (slug);
 create index tag_index_n on tag_index (n desc);
 grant select on tag_index to anon, authenticated;
