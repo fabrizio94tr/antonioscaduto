@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fmtStamp, getArticlesByTag, getTag } from "@/lib/data";
+import NewsItem from "@/components/NewsItem";
+import Pagination from "@/components/Pagination";
+import { getArticlesByTag, getTag } from "@/lib/data";
 import { IS_STAGING, SITE_URL } from "@/lib/seo";
+import { teamColors, textOn } from "@/lib/teams";
 
 export const revalidate = 300;
 const SIZE = 30;
@@ -26,29 +28,19 @@ export default async function TagPage({ params, searchParams }: P) {
   const tag = await getTag(slug);
   if (!tag) notFound();
   const articles = await getArticlesByTag(tag.name, page, SIZE);
-  const pages = Math.ceil(tag.n / SIZE);
+  const colors = teamColors(slug);
   return (
-    <main className="wrap">
-      <h1 className="page-title">{tag.name}</h1>
-      <p className="updated">{tag.n} articoli</p>
-      <ul className="timeline">
-        {articles.map((a) => (
-          <li key={a.id}>
-            <time dateTime={a.published_at}>{fmtStamp(a.published_at)}</time>
-            <div>
-              <span className="tag">{a.category?.name}</span><br />
-              <Link href={`/${a.slug}`}>{a.title}</Link>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {pages > 1 && (
-        <nav className="pager">
-          {page > 1 && <Link href={`/tag/${slug}${page > 2 ? `?pagina=${page - 1}` : ""}`}>← Più recenti</Link>}
-          <strong>{page}</strong> / {pages}
-          {page < pages && <Link href={`/tag/${slug}?pagina=${page + 1}`}>Meno recenti →</Link>}
-        </nav>
-      )}
-    </main>
+    <>
+      <section className={`page-hero ${colors ? "team-hero" : ""}`} style={colors ? { ["--t1" as string]: colors[0], ["--t2" as string]: colors[1], ["--tx" as string]: textOn(colors[0]) } : undefined}>
+        <div className="wrap">
+          <h1>{tag.name}</h1>
+          <p>{tag.n} articoli{colors ? " · speciale squadra" : ""}</p>
+        </div>
+      </section>
+      <main className="wrap">
+        <div style={{ maxWidth: 860 }}>{articles.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+        <Pagination page={page} total={tag.n} size={SIZE} href={(p) => `/tag/${slug}${p > 1 ? `?pagina=${p}` : ""}`} />
+      </main>
+    </>
   );
 }

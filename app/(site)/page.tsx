@@ -1,127 +1,105 @@
 import Link from "next/link";
-import Cover from "@/components/Cover";
 import AdSlot from "@/components/AdSlot";
+import AuthorCard from "@/components/AuthorCard";
+import HeroSlider, { type HeroSlide } from "@/components/HeroSlider";
+import MercatoRadar from "@/components/MercatoRadar";
+import NewsItem from "@/components/NewsItem";
+import NewsPoller from "@/components/NewsPoller";
 import Newsletter from "@/components/Newsletter";
+import SocialCtas from "@/components/SocialCtas";
+import StandingsWidget from "@/components/StandingsWidget";
 import { fmtLong, fmtStamp, getArticles, getHotTags, getMostRead } from "@/lib/data";
+import { heroName } from "@/lib/hero";
 
 export const revalidate = 60;
 
 export default async function Home() {
-  const [all, editoriali, focus, mostRead, hotTags] = await Promise.all([
-    getArticles({ limit: 40 }),
-    getArticles({ category: "editoriale", limit: 4 }),
-    getArticles({ featured: true, limit: 8 }),
+  const [all, featured, editoriali, mercato, serieA, mostRead, hotTags] = await Promise.all([
+    getArticles({ limit: 30 }),
+    getArticles({ featured: true, limit: 4 }),
+    getArticles({ category: "editoriale", limit: 1 }),
+    getArticles({ category: "calciomercato", limit: 4 }),
+    getArticles({ category: "serie-a", limit: 4 }),
     getMostRead(5),
     getHotTags(14),
   ]);
-  const heroes = focus.length >= 4 ? focus.slice(0, 4) : all.slice(0, 4);
-  const [main, ...side] = heroes;
+
+  // hero: articoli "in evidenza" (con immagine), altrimenti le ultime con immagine
+  const withImg = (l: typeof all) => l.filter((a) => a.image_url);
+  const pool = featured.length >= 3 ? featured : [...featured, ...withImg(all).filter((a) => !featured.some((f) => f.id === a.id))];
+  const heroes = pool.slice(0, 4);
+  const slides: HeroSlide[] = heroes.map((a) => ({
+    slug: a.slug, title: a.title, image: a.image_url, cat: a.category?.name ?? "News",
+    name: heroName(a.title, a.tags, a.category?.name ?? ""), when: fmtStamp(a.published_at),
+  }));
   const used = new Set(heroes.map((a) => a.id));
-  const latest = all.filter((a) => !used.has(a.id)).slice(0, 12);
-  const grid = all.filter((a) => a.image_url).slice(0, 6);
+  const latest = all.filter((a) => !used.has(a.id)).slice(0, 10);
+  const edit = editoriali[0];
+  const mercatoList = mercato.filter((a) => !used.has(a.id) && !latest.some((l) => l.id === a.id)).slice(0, 4);
+  const serieAList = serieA.filter((a) => !used.has(a.id) && !latest.some((l) => l.id === a.id)).slice(0, 4);
 
   return (
     <main className="wrap">
       {all[0] && <p className="updated">Ultimo aggiornamento: {fmtLong(all[0].published_at)}</p>}
-
-      {main && (
-        <section className="hero">
-          <Link href={`/${main.slug}`} className="hero-main">
-            <Cover src={main.image_url} alt={main.title} />
-            <div className="cap">
-              <span className="tag">{main.category?.name}</span>
-              <h2>{main.title}</h2>
-            </div>
-          </Link>
-          <div className="hero-side">
-            {side.slice(0, 2).map((a) => (
-              <Link key={a.id} href={`/${a.slug}`}>
-                <Cover src={a.image_url} alt={a.title} />
-                <div className="cap">
-                  <span className="tag">{a.category?.name}</span>
-                  <h3>{a.title}</h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {hotTags.length > 0 && (
-        <nav className="chips hot" aria-label="Argomenti">
-          <strong>Argomenti:</strong>
-          {hotTags.map((t) => <Link key={t.slug} href={`/tag/${t.slug}`}>{t.name}</Link>)}
-        </nav>
-      )}
-
       <AdSlot slot="home" />
 
       <div className="cols">
-        <section>
-          <h2 className="section-title"><span>Ultime notizie</span></h2>
-          <ul className="timeline">
-            {latest.map((a) => (
-              <li key={a.id}>
-                <time dateTime={a.published_at}>{fmtStamp(a.published_at)}</time>
-                <div>
-                  <span className="tag">{a.category?.name}</span>
-                  <br />
-                  <Link href={`/${a.slug}`}>{a.title}</Link>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <div>
+          {slides.length > 0 && <HeroSlider slides={slides} />}
 
-        <aside>
-          {editoriali.length > 0 && (
+          {hotTags.length > 0 && (
+            <nav className="chips hot" aria-label="Argomenti">
+              <strong>Argomenti</strong>
+              {hotTags.map((t) => <Link key={t.slug} href={`/tag/${t.slug}`}>{t.name}</Link>)}
+            </nav>
+          )}
+
+          <h2 className="section-title"><span>Ultime notizie</span><Link href="/category/news">Tutte →</Link></h2>
+          <div>{latest.slice(0, 6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+
+          {edit && (
+            <Link href={`/${edit.slug}`} className="edit-strip" data-reveal>
+              <div><div className="tg">Editoriale</div><div className="tt">{edit.title}</div></div>
+              <span className="go" aria-hidden>→</span>
+            </Link>
+          )}
+
+          <AdSlot slot="article" />
+
+          {latest.length > 6 && <div>{latest.slice(6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>}
+
+          {mercatoList.length > 0 && (
             <>
-              <h2 className="section-title"><span>Editoriale</span></h2>
-              <ul className="side-list">
-                {editoriali.map((a) => (
-                  <li key={a.id}>
-                    <time>{fmtStamp(a.published_at)}</time>
-                    <Link href={`/${a.slug}`}>{a.title}</Link>
-                  </li>
-                ))}
-              </ul>
+              <h2 className="section-title"><span>Calciomercato</span><Link href="/category/calciomercato">Tutte →</Link></h2>
+              <div>{mercatoList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
             </>
           )}
+          {serieAList.length > 0 && (
+            <>
+              <h2 className="section-title"><span>Serie A</span><Link href="/category/serie-a">Tutte →</Link></h2>
+              <div>{serieAList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+            </>
+          )}
+        </div>
+
+        <aside className="side">
+          <MercatoRadar />
+          <StandingsWidget />
           {mostRead.length > 0 && (
-            <>
-              <h2 className="section-title"><span>Più letti</span></h2>
-              <ol className="side-list ranked">
-                {mostRead.map((a) => (
-                  <li key={a.id}><Link href={`/${a.slug}`}>{a.title}</Link></li>
-                ))}
-              </ol>
-            </>
+            <section className="widget" data-reveal>
+              <h2>Più letti</h2>
+              <ol className="ranked">{mostRead.map((a) => <li key={a.id}><Link href={`/${a.slug}`}>{a.title}</Link></li>)}</ol>
+            </section>
           )}
-          <AdSlot slot="sidebar" />
-          <Newsletter />
-          <div className="box">
-            <h2 className="tag">Chi è Antonio Scaduto</h2>
-            <p>Il calcio a 360 gradi: notizie, calciomercato, interviste ed esclusive dal mondo del pallone.</p>
-            <Link href="/chi-siamo" className="btn">Scopri di più</Link>
+          <div className="side-sticky">
+            <AdSlot slot="sidebar" />
+            <SocialCtas />
+            <Newsletter />
+            <AuthorCard />
           </div>
         </aside>
       </div>
-
-      {grid.length > 0 && (
-        <section>
-          <h2 className="section-title"><span>In evidenza</span></h2>
-          <div className="grid">
-            {grid.map((a) => (
-              <Link key={a.id} href={`/${a.slug}`} className="card">
-                <div className="img"><Cover src={a.image_url} alt="" /></div>
-                <span className="tag">{a.category?.name}</span>
-                <h3>{a.title}</h3>
-                <time>{fmtStamp(a.published_at)}</time>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+      {all[0] && <NewsPoller since={all[0].published_at} />}
     </main>
   );
 }

@@ -22,6 +22,14 @@ Next.js 15 (App Router) + Supabase + Vercel. Stile ispirato ad alfredopedulla.co
 Panoramica, articoli (editor visuale, bozze, programmazione, immagini, tag, SEO: meta title/description, canonical, noindex,
 immagine social, parola chiave con checklist e anteprima Google), pagine, categorie, Mercato Live, newsletter (CSV), impostazioni.
 
+## Design ("Scoreboard")
+Basato sulla variante F del wireframe (verde campo + neon, ispirata a Pedullà) con:
+- Font ospitati in `public/fonts`: Anton (titoli/nomi), IBM Plex Sans (testi), IBM Plex Mono (orari/dati), Newsreader (lettura articoli)
+- Modalità notte, grana sottile, ambra per il mercato, rosso per l'ultim'ora, colori ufficiali delle squadre nelle pagine `/tag/<squadra>` (`lib/teams.ts`)
+- Hero a rotazione con nome gigante, pillola "N nuove notizie" in tempo reale, ricerca istantanea (`/` o Ctrl/⌘+K),
+  Mercato Radar (termometro trattative), lettura con progresso/zoom/ascolto vocale, pallone che rotola con lo scroll
+- Animazioni disattivate con "riduci movimento"; stili admin separati in `app/admin/admin.css`
+
 ## Funzioni aggiuntive
 - Pagine tag/squadra (`/tag/milan`), argomenti caldi in home, sitemap indicizzate + sitemap Google News
 - Commenti con moderazione, notifiche push (ultim'ora), newsletter con invio (Resend) e disiscrizione

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { fmtStamp, getTransfers } from "@/lib/data";
 import type { TransferStatus } from "@/lib/types";
+import { HEAT } from "@/lib/transfers";
 
 export const metadata: Metadata = { title: "Calciomercato Live", description: "Tutte le trattative di calciomercato aggiornate in tempo reale, con stato e cifre." };
 export const revalidate = 60;
@@ -45,7 +46,7 @@ export default async function Mercato({ searchParams }: { searchParams: Promise<
                 <td>{t.from_club ?? "—"}</td>
                 <td>{t.to_club ?? "—"}</td>
                 <td>{t.fee ?? "—"}</td>
-                <td><span className={`st st-${t.status}`}>{STATUS[t.status]}</span></td>
+                <td><span className={`st st-${t.status}`}>{STATUS[t.status]}</span><div className={`heat heat-${t.status}`} style={{ ["--w" as string]: `${HEAT[t.status]}%` }}><i /></div></td>
                 <td>{fmtStamp(t.updated_at)}</td>
               </tr>
             ))}

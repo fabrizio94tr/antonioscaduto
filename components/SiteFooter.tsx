@@ -19,6 +19,7 @@ export default async function SiteFooter() {
   return (
     <footer className="footer">
       <div className="wrap">
+        <div className="logo">{s.site_title}</div>
         <ul>
           {links.map(([s, n]) => (
             <li key={s}>

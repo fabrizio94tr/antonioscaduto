@@ -171,7 +171,7 @@ export async function deleteTransfer(formData: FormData) {
 /* ---------- impostazioni ---------- */
 export async function saveSettings(formData: FormData) {
   const sb = await requireAdmin();
-  const keys = ["site_title", "tagline", "meta_description", "og_image", "contact_email", "facebook", "instagram", "x", "youtube", "telegram", "ga_id", "gsc_verification", "adsense_client", "ad_slot_article", "ad_slot_sidebar", "ad_slot_home", "sponsor_image", "sponsor_link", "newsletter_from"];
+  const keys = ["site_title", "tagline", "meta_description", "og_image", "contact_email", "facebook", "instagram", "x", "youtube", "telegram", "ga_id", "gsc_verification", "adsense_client", "ad_slot_article", "ad_slot_sidebar", "ad_slot_home", "sponsor_image", "sponsor_link", "newsletter_from", "author_name", "author_bio", "author_photo"];
   const rows = keys.map((key) => ({ key, value: str(formData, key) }));
   await sb.from("settings").upsert(rows);
   refresh();

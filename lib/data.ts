@@ -4,6 +4,8 @@ import type { Article, Category, Page, Transfer } from "./types";
 
 const byDate = (a: Article, b: Article) => +new Date(b.published_at) - +new Date(a.published_at);
 const nowIso = () => new Date().toISOString();
+/** Colonne per le liste: evita di scaricare il testo completo di ogni articolo. */
+const LIST = "id,slug,title,excerpt,image_url,category_id,featured,breaking,published,published_at,tags,author_name";
 
 export async function getCategories(): Promise<Category[]> {
   if (!hasSupabase) return demoCategories;
@@ -25,7 +27,7 @@ export async function getArticles({ category, featured, limit = 30, page = 1 }: 
   // "!inner" solo quando serve filtrare per categoria (join più leggero altrimenti)
   let q = sb
     .from("articles")
-    .select(category ? "*, category:categories!inner(*)" : "*, category:categories(*)")
+    .select(category ? `${LIST}, category:categories!inner(*)` : `${LIST}, category:categories(*)`)
     .eq("published", true)
     .lte("published_at", nowIso())
     .order("published_at", { ascending: false })
@@ -33,7 +35,7 @@ export async function getArticles({ category, featured, limit = 30, page = 1 }: 
   if (category) q = q.eq("category.slug", category);
   if (featured) q = q.eq("featured", true);
   const { data } = await q;
-  return (data as unknown as Article[]) ?? [];
+  return ((data as unknown as Article[]) ?? []).map((a) => ({ ...a, content: "" }));
 }
 
 export async function countArticles(category?: string): Promise<number> {
@@ -129,6 +131,7 @@ export async function getSlugChunk(chunk: number, size = 1000) {
 const dtf = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", ...o });
 export const fmtStamp = (iso: string) =>
   `${dtf({ day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(iso))} | ${dtf({ hour: "2-digit", minute: "2-digit" }).format(new Date(iso))}`;
+export const fmtTime = (iso: string) => dtf({ hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
 export const fmtLong = (iso: string) => dtf({ dateStyle: "full", timeStyle: "short" }).format(new Date(iso));
 
 /* ---------- tag / squadre ---------- */
@@ -174,4 +177,16 @@ export async function getComments(articleId: string): Promise<Comment[]> {
     .from("comments").select("id,author,body,created_at").eq("article_id", articleId).eq("approved", true)
     .order("created_at", { ascending: true }).limit(200);
   return (data as Comment[]) ?? [];
+}
+
+export async function getLatestPublished(): Promise<string | null> {
+  if (!hasSupabase) return demoArticles.sort(byDate)[0]?.published_at ?? null;
+  const { data } = await supabasePublic().from("articles").select("published_at").eq("published", true).lte("published_at", nowIso()).order("published_at", { ascending: false }).limit(1);
+  return data?.[0]?.published_at ?? null;
+}
+
+export async function countNewerThan(iso: string): Promise<number> {
+  if (!hasSupabase) return 0;
+  const { count } = await supabasePublic().from("articles").select("id", { count: "exact", head: true }).eq("published", true).gt("published_at", iso).lte("published_at", nowIso());
+  return count ?? 0;
 }

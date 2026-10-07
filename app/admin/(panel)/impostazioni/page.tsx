@@ -3,6 +3,7 @@ import { getSettings } from "@/lib/settings";
 
 const GROUPS: { title: string; hint?: string; fields: [string, string][] }[] = [
   { title: "Sito", fields: [["site_title", "Nome del sito"], ["tagline", "Slogan"], ["og_image", "Immagine social predefinita (URL, 1200×630)"], ["contact_email", "Email di contatto"]] },
+  { title: "Autore (box in home e negli articoli)", fields: [["author_name", "Nome"], ["author_photo", "Foto (URL)"], ["author_bio", "Presentazione breve"]] },
   { title: "Social", fields: [["facebook", "Facebook (URL)"], ["instagram", "Instagram (URL)"], ["x", "X / Twitter (URL)"], ["youtube", "YouTube (URL)"], ["telegram", "Telegram (URL)"]] },
   {
     title: "Statistiche e Search Console",
