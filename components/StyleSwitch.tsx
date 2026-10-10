@@ -3,12 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-type Style = "classic" | "new";
+export const STYLES = [
+  { id: "classic", label: "Classico" },
+  { id: "new", label: "Pagina" },
+  { id: "bold", label: "Volt" },
+  { id: "cds", label: "Quotidiano" },
+] as const;
+type Style = (typeof STYLES)[number]["id"];
+const IDS: string[] = STYLES.map((s) => s.id);
 
 /**
- * Slider "Classico / Nuovo": permette ai lettori (e al cliente) di confrontare le due versioni grafiche.
+ * Slider degli stili grafici: permette ai lettori (e al cliente) di confrontare le versioni del sito.
  * La scelta resta salvata sul dispositivo. Il cambio usa le View Transitions (cerchio che si allarga dal punto del click).
- * Si può anche aprire il sito direttamente nello stile voluto con ?stile=nuovo o ?stile=classico.
+ * Link diretti: ?stile=classico | pagina | volt | quotidiano.
  */
 export default function StyleSwitch() {
   const [style, setStyle] = useState<Style>("classic");
@@ -17,7 +24,8 @@ export default function StyleSwitch() {
   const path = usePathname();
 
   useEffect(() => {
-    setStyle(document.documentElement.dataset.style === "new" ? "new" : "classic");
+    const cur = document.documentElement.dataset.style ?? "classic";
+    setStyle((IDS.includes(cur) ? cur : "classic") as Style);
     try {
       if (!localStorage.getItem("style-hint")) {
         const t1 = setTimeout(() => setHint(true), 1800);
@@ -26,6 +34,10 @@ export default function StyleSwitch() {
       }
     } catch {}
   }, []);
+
+  if (path.startsWith("/admin") || path.startsWith("/anteprima")) return null;
+
+  const index = Math.max(0, IDS.indexOf(style));
 
   const apply = (v: Style) => {
     document.documentElement.dataset.style = v;
@@ -53,19 +65,18 @@ export default function StyleSwitch() {
   };
 
   const onKey = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") { e.preventDefault(); choose("classic", e); }
-    if (e.key === "ArrowRight") { e.preventDefault(); choose("new", e); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); choose(STYLES[(index + STYLES.length - 1) % STYLES.length].id, e); }
+    if (e.key === "ArrowRight") { e.preventDefault(); choose(STYLES[(index + 1) % STYLES.length].id, e); }
   };
 
-  if (path.startsWith("/admin") || path.startsWith("/anteprima")) return null;
-
   return (
-    <div className={`style-switch ${style}`} ref={ref}>
-      {hint && <div className="style-hint" role="status">Prova lo stile <b>Nuovo</b> ✨<i /></div>}
-      <div className="ss-track" role="radiogroup" aria-label="Stile grafico del sito" onKeyDown={onKey}>
+    <div className="style-switch" data-s={style} ref={ref}>
+      {hint && <div className="style-hint" role="status">Prova gli altri <b>stili</b> ✨<i /></div>}
+      <div className="ss-track" role="radiogroup" aria-label="Stile grafico del sito" onKeyDown={onKey} style={{ ["--n" as string]: STYLES.length, ["--i" as string]: index }}>
         <span className="ss-thumb" aria-hidden />
-        <button role="radio" aria-checked={style === "classic"} tabIndex={style === "classic" ? 0 : -1} onClick={(e) => choose("classic", e)}>Classico</button>
-        <button role="radio" aria-checked={style === "new"} tabIndex={style === "new" ? 0 : -1} onClick={(e) => choose("new", e)}>Nuovo</button>
+        {STYLES.map((s) => (
+          <button key={s.id} role="radio" aria-checked={style === s.id} tabIndex={style === s.id ? 0 : -1} onClick={(e) => choose(s.id, e)}>{s.label}</button>
+        ))}
       </div>
     </div>
   );

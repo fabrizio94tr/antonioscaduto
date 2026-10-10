@@ -1,0 +1,200 @@
+/* ==========================================================================
+   EFFETTI — transizioni di pagina, ingressi, movimento ambientale e puntatore.
+   Una sezione condivisa + una per ciascuno dei quattro stili.
+   Tutto si spegne con prefers-reduced-motion (vedi fondo) e sui dispositivi touch dove serve il mouse.
+   ========================================================================== */
+
+/* ==========================================================================
+   Condivisi
+   ========================================================================== */
+
+/* --- tendone di transizione tra le pagine (RouteCurtain) --- */
+.curtain { position: fixed; inset: 0; z-index: 4000; display: flex; pointer-events: none; visibility: hidden; overflow: hidden; }
+.curtain.cover, .curtain.reveal { visibility: visible; }
+.curtain.cover { pointer-events: auto; }
+.curtain i { flex: 1; transform: scaleY(0); transform-origin: 50% 100%; will-change: transform; }
+.curtain.cover i { animation: cvIn .46s cubic-bezier(.7, 0, .25, 1) both; animation-delay: calc(var(--k) * 42ms); }
+.curtain.reveal i { transform: scaleY(1); transform-origin: 50% 0; animation: cvOut .55s cubic-bezier(.7, 0, .25, 1) both; animation-delay: calc(var(--k) * 42ms); }
+@keyframes cvIn { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes cvOut { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+.curtain-word { position: absolute; inset: 0; display: none; place-items: center; font-family: var(--font-display); font-size: clamp(3rem, 13vw, 11rem); line-height: 1; text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; opacity: 0; pointer-events: none; }
+.curtain.cover .curtain-word { animation: cwIn .3s ease .28s both; }
+.curtain.reveal .curtain-word { animation: cwOut .28s ease both; }
+@keyframes cwIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes cwOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-18px); } }
+.curtain-ball { position: absolute; left: 0; top: 50%; width: 88px; height: 88px; margin-top: -44px; opacity: 0; pointer-events: none; filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .5)); }
+.curtain.cover .curtain-ball { animation: ballAcross .66s cubic-bezier(.45, 0, .55, 1) .08s both; }
+.curtain.reveal .curtain-ball { animation: ballBack .6s cubic-bezier(.45, 0, .55, 1) both; }
+@keyframes ballAcross { from { opacity: 1; transform: translateX(-130px) rotate(0); } to { opacity: 1; transform: translateX(calc(100vw + 50px)) rotate(900deg); } }
+@keyframes ballBack { from { opacity: 1; transform: translateX(calc(100vw + 50px)) rotate(0); } to { opacity: 1; transform: translateX(-130px) rotate(-900deg); } }
+
+/* classico: strisce di prato falciato */
+:root[data-style="classic"] .curtain i { background: #0f3d24; box-shadow: inset 0 -6px 0 #2ee66b; }
+:root[data-style="classic"] .curtain i:nth-child(even) { background: #14532f; }
+/* pagina: inchiostro con strisce rosse e il nome */
+:root[data-style="new"] .curtain i { background: #15110c; }
+:root[data-style="new"] .curtain i:nth-child(3n + 1) { background: #ff4a1c; }
+:root[data-style="new"] .curtain-word { display: grid; color: #f1e9d6; text-shadow: 6px 6px 0 #ff4a1c; }
+/* volt: lame oblique giallo acido / nero, testo a differenza */
+:root[data-style="bold"] .curtain { left: -9vw; right: -9vw; }
+:root[data-style="bold"] .curtain i { background: #d4ff3a; margin-inline: -16px; min-width: calc(100vw / 7 + 44px); transform: skewX(-12deg) scaleY(0); }
+:root[data-style="bold"] .curtain i:nth-child(even) { background: #05070b; }
+:root[data-style="bold"] .curtain.cover i { animation-name: cvInSk; }
+:root[data-style="bold"] .curtain.reveal i { transform: skewX(-12deg) scaleY(1); animation-name: cvOutSk; }
+:root[data-style="bold"] .curtain-word { display: grid; color: #fff; mix-blend-mode: difference; font-style: italic; }
+@keyframes cvInSk { from { transform: skewX(-12deg) scaleY(0); } to { transform: skewX(-12deg) scaleY(1); } }
+@keyframes cvOutSk { from { transform: skewX(-12deg) scaleY(1); } to { transform: skewX(-12deg) scaleY(0); } }
+/* quotidiano: barre orizzontali rosse e nere che scorrono come un'edizione straordinaria */
+:root[data-style="cds"] .curtain { flex-direction: column; }
+:root[data-style="cds"] .curtain i { background: #e3001b; transform: scaleX(0); transform-origin: 0 50%; }
+:root[data-style="cds"] .curtain i:nth-child(even) { background: #111; }
+:root[data-style="cds"] .curtain.cover i { animation-name: cvInX; }
+:root[data-style="cds"] .curtain.reveal i { transform: scaleX(1); transform-origin: 100% 50%; animation-name: cvOutX; }
+@keyframes cvInX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes cvOutX { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* --- barra di avanzamento della pagina --- */
+.sp-bar { position: fixed; top: 0; left: 0; height: 3px; width: calc(var(--sp, 0) * 100%); z-index: 89; pointer-events: none; background: #2ee66b; box-shadow: 0 0 10px rgba(46, 230, 107, .7); }
+:root[data-style="new"] .sp-bar { background: #ff4a1c; box-shadow: none; height: 4px; }
+:root[data-style="bold"] .sp-bar { background: #d4ff3a; box-shadow: 0 0 14px #d4ff3a; }
+:root[data-style="cds"] .sp-bar { background: #e3001b; box-shadow: none; }
+:root:has(.read-progress) .sp-bar { display: none; }
+
+/* --- pallone che insegue il cursore (solo Volt) --- */
+.cursor-ball { display: none; position: fixed; left: 0; top: 0; width: 28px; height: 28px; z-index: 6000; pointer-events: none; will-change: transform; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .55)); }
+:root[data-style="bold"] .cursor-ball { display: block; }
+
+/* --- testo dell'hero che entra a scaglioni, a ogni cambio di notizia --- */
+.hero-slide.on .hero-cat { animation: riseIn .6s cubic-bezier(.2, .8, .2, 1) .15s both; }
+.hero-slide.on .hero-title { animation: riseIn .75s cubic-bezier(.2, .8, .2, 1) .32s both; }
+.hero-slide.on .hero-meta { animation: riseIn .6s ease .5s both; }
+@keyframes riseIn { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+
+/* --- parallasse dell'hero quando si scorre (dove il browser lo supporta) --- */
+@supports (animation-timeline: view()) {
+  .hero-img { animation: heroPar linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+  @keyframes heroPar { to { transform: translateY(14%) scale(1.07); } }
+}
+
+/* --- riflesso di luce sulle foto al passaggio del mouse (non in Volt) --- */
+:root:not([data-style="bold"]) .nl-thumb::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .38) 50%, transparent 62%); transform: translateX(-130%); }
+:root:not([data-style="bold"]) .nl-item:hover .nl-thumb::before { transform: translateX(130%); transition: transform .85s ease; }
+
+@keyframes sweepX { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+
+/* ==========================================================================
+   CLASSICO — luci da stadio e movimento morbido
+   ========================================================================== */
+:root[data-style="classic"] .site-hdr { position: relative; overflow: hidden; }
+:root[data-style="classic"] .site-hdr::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(100deg, transparent 35%, rgba(46, 230, 107, .16) 50%, transparent 65%); transform: translateX(-130%); animation: sweepX 9s ease-in-out 1.5s infinite; }
+:root[data-style="classic"] .hero::after { content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, .17) 50%, transparent 60%); transform: translateX(-130%); animation: sweepX 8s ease-in-out 2.5s infinite; }
+:root[data-style="classic"] .widget { transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s, background-color .35s, border-color .35s; }
+:root[data-style="classic"] .widget:hover { transform: translateY(-4px); box-shadow: 0 18px 34px -20px rgba(15, 61, 36, .55); }
+:root[data-style="classic"] .chips a { transition: transform .25s cubic-bezier(.3, 1.6, .5, 1), background .2s, color .2s, border-color .2s; }
+:root[data-style="classic"] .chips a:hover { transform: translateY(-3px) scale(1.06); }
+:root[data-style="classic"] .nl-item { transition: background-color .2s, transform .3s cubic-bezier(.2, .8, .2, 1); }
+:root[data-style="classic"] .nl-item:hover { transform: translateX(5px); }
+:root[data-style="classic"] .section-title { position: relative; }
+:root[data-style="classic"] .section-title::after { content: ""; position: absolute; left: 0; bottom: -2px; height: 2px; width: 100%; background: var(--neon); transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.7, 0, .2, 1); }
+:root[data-style="classic"] .section-title:hover::after { transform: scaleX(1); }
+
+/* ==========================================================================
+   PAGINA — tipografia da giornale: composizione, timbri, mezzatinta che scorre
+   ========================================================================== */
+/* ingresso: il blocco si "compone" da sinistra a destra */
+:root.js[data-style="new"] [data-reveal] { opacity: 0; transform: none; }
+:root.js[data-style="new"] [data-reveal].in { opacity: 1; animation: inkReveal .95s cubic-bezier(.7, 0, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 80ms); }
+@keyframes inkReveal { from { clip-path: inset(-16px 100% -16px -16px); } to { clip-path: inset(-16px -16px -16px -16px); } }
+/* timbri: etichette e affidabilità "battono" sulla pagina */
+:root[data-style="new"] .nl-item.in .chip { animation: stamp .6s cubic-bezier(.2, 1.5, .4, 1) .5s backwards; }
+:root[data-style="new"] .nl-item.in .rel, :root[data-style="new"] .article .rel { animation: stampRel .6s cubic-bezier(.2, 1.5, .4, 1) .6s backwards; }
+@keyframes stamp { from { opacity: 0; transform: scale(2.2) rotate(-16deg); } to { opacity: 1; transform: rotate(-1.5deg); } }
+@keyframes stampRel { from { opacity: 0; transform: scale(2) rotate(10deg); } to { opacity: 1; transform: rotate(-1.5deg); } }
+/* cambio notizia nell'hero: tendina verticale d'inchiostro */
+:root[data-style="new"] .hero-slide { opacity: 1; visibility: visible; z-index: 1; clip-path: inset(100% 0 0 0); transition: clip-path 0s linear .9s; }
+:root[data-style="new"] .hero-slide.on { z-index: 2; clip-path: inset(0 0 0 0); transition: clip-path .9s cubic-bezier(.7, 0, .2, 1) 0s; }
+/* mezzatinta che scorre lentamente sulle foto */
+:root[data-style="new"] .hero-slide::before { animation: halftone 5s linear infinite; }
+@keyframes halftone { to { background-position: 5px 5px, 0 0; } }
+:root[data-style="new"] .edit-strip::before { animation: bob 4.5s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-9px) rotate(-3deg); } }
+:root[data-style="new"] .btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--hard); }
+:root[data-style="new"] .stats-band b { text-shadow: 3px 3px 0 rgba(255, 255, 255, .1); }
+:root[data-style="new"] .section-title span { animation: labelIn .8s cubic-bezier(.3, 1.6, .5, 1) .15s backwards; }
+@keyframes labelIn { from { opacity: 0; transform: rotate(-8deg) translateY(30px); } }
+
+/* ==========================================================================
+   VOLT — aurora, tilt 3D, bordi luminosi, glitch
+   ========================================================================== */
+:root[data-style="bold"] body::after { content: ""; position: fixed; inset: -25%; z-index: -1; pointer-events: none; background: radial-gradient(40% 40% at 25% 30%, rgba(124, 92, 255, .30), transparent 70%), radial-gradient(36% 36% at 76% 68%, rgba(212, 255, 58, .17), transparent 70%), radial-gradient(30% 30% at 60% 18%, rgba(0, 255, 200, .13), transparent 70%); animation: aurora 24s ease-in-out infinite alternate; filter: blur(30px); }
+@keyframes aurora { 0% { transform: translate3d(-4%, -2%, 0) rotate(0deg) scale(1); } 50% { transform: translate3d(5%, 4%, 0) rotate(8deg) scale(1.12); } 100% { transform: translate3d(-2%, 6%, 0) rotate(-6deg) scale(1.05); } }
+/* ingresso: dal buio, sfocato, con scala */
+:root.js[data-style="bold"] [data-reveal] { opacity: 0; transform: none; }
+:root.js[data-style="bold"] [data-reveal].in { opacity: 1; animation: voltIn 1s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 90ms); }
+@keyframes voltIn { from { opacity: 0; transform: translateY(48px) scale(.94); filter: blur(14px); } to { opacity: 1; transform: none; filter: blur(0); } }
+/* tilt 3D (angoli impostati dal puntatore) */
+:root[data-style="bold"] .nl-item, :root[data-style="bold"] .nl-item:hover { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px)); transition: transform .18s ease-out, border-color .3s, box-shadow .4s; will-change: transform; }
+:root[data-style="bold"] .nl-item:hover { --ty: -6px; }
+:root[data-style="bold"] .widget .nl-item, :root[data-style="bold"] .widget .nl-item:hover { transform: none; }
+/* bordo luminoso che gira attorno alla scheda */
+@property --ang { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+:root[data-style="bold"] .nl-item::before { display: block; content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; padding: 2px; pointer-events: none; opacity: 0; transition: opacity .3s; background: conic-gradient(from var(--ang), transparent 0 62%, var(--volt) 82%, #fff 90%, transparent 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: spinAng 2.6s linear infinite; }
+:root[data-style="bold"] .nl-item:hover::before { opacity: 1; }
+:root[data-style="bold"] .widget .nl-item::before { display: none; }
+@keyframes spinAng { to { --ang: 360deg; } }
+/* pulsanti magnetici */
+:root[data-style="bold"] .btn { transform: translate(var(--bx, 0px), var(--by, 0px)); transition: transform .25s cubic-bezier(.2, .8, .2, 1), color .2s; }
+/* il nome dell'hero entra con effetto "glitch" RGB */
+:root[data-style="bold"] .hero-slide.on .hero-name { animation: voltName .9s cubic-bezier(.2, .8, .2, 1) .15s both, glitch .75s linear 1s both; }
+@keyframes glitch {
+  0% { filter: drop-shadow(7px 0 0 rgba(255, 0, 110, .9)) drop-shadow(-7px 0 0 rgba(0, 240, 255, .9)); }
+  10% { filter: drop-shadow(-5px 0 0 rgba(255, 0, 110, .9)) drop-shadow(5px 0 0 rgba(0, 240, 255, .9)); transform: skewX(-7deg) translateX(6px); }
+  20% { filter: none; transform: skewX(-7deg); }
+  34% { filter: drop-shadow(4px 0 0 rgba(255, 0, 110, .8)) drop-shadow(-4px 0 0 rgba(0, 240, 255, .8)); }
+  42%, 100% { filter: none; }
+}
+:root[data-style="bold"] .kinetic { transform: skewY(-2.2deg); margin-block: 40px; }
+:root[data-style="bold"] .kinetic-track { animation: none; will-change: transform; }
+:root[data-style="bold"] .section-title span { animation: voltTitle .9s cubic-bezier(.2, .8, .2, 1) backwards; }
+@keyframes voltTitle { from { opacity: 0; transform: translateX(-60px) skewX(-12deg); letter-spacing: .08em; } }
+:root[data-style="bold"] .style-hint { background: #d4ff3a; color: #05070b; }
+:root[data-style="bold"] .style-hint i { background: #d4ff3a; }
+
+/* ==========================================================================
+   QUOTIDIANO — nervosismo da redazione: filetti che si tracciano, flash, scorrimenti
+   ========================================================================== */
+:root.js[data-style="cds"] [data-reveal] { opacity: 0; transform: none; }
+:root.js[data-style="cds"] [data-reveal].in { opacity: 1; animation: cdsIn .55s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 65ms); }
+@keyframes cdsIn { from { opacity: 0; transform: translateX(-22px); } to { opacity: 1; transform: none; } }
+/* i filetti delle sezioni si tracciano da sinistra */
+:root[data-style="cds"] .section-title { position: relative; border-bottom: 0; }
+:root[data-style="cds"] .section-title::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--ink); transform-origin: left; animation: ruleDraw 1s cubic-bezier(.7, 0, .2, 1) .15s backwards; }
+@keyframes ruleDraw { from { transform: scaleX(0); } }
+:root[data-style="cds"] .widget { border-top: 0; position: relative; }
+:root[data-style="cds"] .widget::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--ink); transform-origin: left; animation: ruleDraw 1s cubic-bezier(.7, 0, .2, 1) .3s backwards; }
+/* LIVE e ultim'ora lampeggiano come in tv */
+:root[data-style="cds"] .ticker-badge { animation: livePulse 1.3s steps(2, jump-none) infinite; }
+@keyframes livePulse { 0% { background: #e3001b; } 100% { background: #8c0010; } }
+:root[data-style="cds"] .hero-slide.on .hero-cat { animation: riseIn .5s ease .1s both, blinkRed .45s steps(2, jump-none) .6s 3; }
+@keyframes blinkRed { 50% { background: #fff; color: #e3001b; } }
+:root[data-style="cds"] .blk-latest .nl-item { transition: padding .25s cubic-bezier(.2, .8, .2, 1), background-color .2s; }
+:root[data-style="cds"] .blk-latest .nl-item:hover { padding-left: 10px; background: var(--soft); }
+:root[data-style="cds"] .marquee-track { animation-duration: 38s; }
+:root[data-style="cds"] .edit-strip { transition: color .3s, transform .25s cubic-bezier(.2, .8, .2, 1); }
+:root[data-style="cds"] .edit-strip:hover { transform: translateX(6px); }
+:root[data-style="cds"] .hero-slide { transition: opacity .55s ease, visibility .55s; }
+
+/* ==========================================================================
+   Movimento ridotto / touch
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .curtain, .cursor-ball { display: none !important; }
+  :root.js[data-style] [data-reveal] { opacity: 1 !important; }
+  :root[data-style="bold"] body::after { display: none; }
+  :root[data-style="new"] .hero-slide, :root[data-style="bold"] .hero-slide { clip-path: none; }
+  :root[data-style="new"] .hero-slide:not(.on), :root[data-style="bold"] .hero-slide:not(.on) { visibility: hidden; opacity: 0; }
+}
+@media (pointer: coarse) {
+  .cursor-ball { display: none !important; }
+  :root[data-style="bold"] .nl-item::before { display: none; }
+}

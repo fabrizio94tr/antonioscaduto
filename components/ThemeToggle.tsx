@@ -12,7 +12,7 @@ export default function ThemeToggle() {
     try { localStorage.setItem("theme", next ? "dark" : "light"); } catch {}
   };
   return (
-    <button onClick={toggle} className="icon-btn" aria-label={dark ? "Passa al tema chiaro" : "Passa alla modalità notte"} title={dark ? "Giorno" : "Notte"}>
+    <button onClick={toggle} className="icon-btn theme-toggle" aria-label={dark ? "Passa al tema chiaro" : "Passa alla modalità notte"} title={dark ? "Giorno" : "Notte"}>
       {dark ? "☀" : "☾"}
     </button>
   );

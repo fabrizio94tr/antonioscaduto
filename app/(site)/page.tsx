@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AdSlot from "@/components/AdSlot";
 import AuthorCard from "@/components/AuthorCard";
+import KineticBand from "@/components/KineticBandServer";
 import HeroSlider, { type HeroSlide } from "@/components/HeroSlider";
 import MercatoRadar from "@/components/MercatoRadar";
 import NewsItem from "@/components/NewsItem";
@@ -56,9 +57,12 @@ export default async function Home() {
           )}
 
           <StatsBand hotTag={hotTags[0]?.name} />
+          <KineticBand />
 
-          <h2 className="section-title"><span>Ultime notizie</span><Link href="/category/news">Tutte →</Link></h2>
-          <div>{latest.slice(0, 6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+          <section className="blk blk-latest">
+            <h2 className="section-title"><span>Ultime notizie</span><Link href="/category/news">Tutte →</Link></h2>
+            <div className="nl-list">{latest.slice(0, 6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+          </section>
 
           {edit && (
             <Link href={`/${edit.slug}`} className="edit-strip" data-reveal>
@@ -69,19 +73,19 @@ export default async function Home() {
 
           <AdSlot slot="article" />
 
-          {latest.length > 6 && <div>{latest.slice(6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>}
+          {latest.length > 6 && <div className="nl-list nl-rest">{latest.slice(6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>}
 
           {mercatoList.length > 0 && (
-            <>
+            <section className="blk blk-mercato">
               <h2 className="section-title"><span>Calciomercato</span><Link href="/category/calciomercato">Tutte →</Link></h2>
-              <div>{mercatoList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
-            </>
+              <div className="nl-list">{mercatoList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+            </section>
           )}
           {serieAList.length > 0 && (
-            <>
+            <section className="blk blk-seriea">
               <h2 className="section-title"><span>Serie A</span><Link href="/category/serie-a">Tutte →</Link></h2>
-              <div>{serieAList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
-            </>
+              <div className="nl-list">{serieAList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+            </section>
           )}
         </div>
 

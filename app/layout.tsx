@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./style-new.css";
+import "./style-bold.css";
+import "./style-cds.css";
+import "./effects.css";
 import { IS_STAGING, SITE_URL } from "@/lib/seo";
 import Consent from "@/components/Consent";
 import IntroSplash from "@/components/IntroSplash";
 import Reveal from "@/components/Reveal";
+import PointerFX from "@/components/PointerFX";
+import RouteCurtain from "@/components/RouteCurtain";
+import ScrollProgress from "@/components/ScrollProgress";
 import StyleSwitch from "@/components/StyleSwitch";
 import { getSettings } from "@/lib/settings";
 
@@ -24,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const s = await getSettings();
-  const defStyle = s.style_default === "new" ? "new" : "classic";
+  const defStyle = ["new", "bold", "cds"].includes(s.style_default) ? s.style_default : "classic";
   const switchOn = s.style_switch !== "0";
   return (
     <html lang="it" data-style={defStyle} suppressHydrationWarning>
@@ -32,7 +38,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t}catch(e){}` }} />
         <script dangerouslySetInnerHTML={{ __html: `document.documentElement.classList.add("js")` }} />
         <script dangerouslySetInnerHTML={{ __html: switchOn
-          ? `try{var m={nuovo:"new","new":"new",classico:"classic",classic:"classic"},q=m[new URLSearchParams(location.search).get("stile")];if(q)localStorage.setItem("style",q);document.documentElement.dataset.style=q||localStorage.getItem("style")||"${defStyle}"}catch(e){}`
+          ? `try{var m={classico:"classic",classic:"classic",nuovo:"new","new":"new",pagina:"new",volt:"bold",bold:"bold",osé:"bold",quotidiano:"cds",cds:"cds"},ok={classic:1,"new":1,bold:1,cds:1},q=m[new URLSearchParams(location.search).get("stile")],st=localStorage.getItem("style");if(q)localStorage.setItem("style",q);document.documentElement.dataset.style=q||(ok[st]?st:"${defStyle}")}catch(e){}`
           : `document.documentElement.dataset.style="${defStyle}"` }} />
         {s.intro !== "0" && s.intro !== "" && <script dangerouslySetInnerHTML={{ __html: `try{if(!sessionStorage.getItem("intro-seen")&&!/^\\/(admin|anteprima)/.test(location.pathname))document.documentElement.classList.add("intro-on")}catch(e){}` }} />}
         <link rel="preload" href="/fonts/plex-sans-var.woff2" as="font" type="font/woff2" crossOrigin="" />
@@ -43,6 +49,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {children}
         <Reveal />
         {switchOn && <StyleSwitch />}
+        <PointerFX />
+        <ScrollProgress />
+        <RouteCurtain />
         <Consent gaId={s.ga_id} adsClient={s.adsense_client} />
       </body>
     </html>

@@ -46,12 +46,14 @@ export default async function Settings({ searchParams }: { searchParams: Promise
                   </select>
                 </label>
                 <label>Stile grafico predefinito
-                  <select name="style_default" defaultValue={s.style_default === "new" ? "new" : "classic"}>
+                  <select name="style_default" defaultValue={["new", "bold", "cds"].includes(s.style_default) ? s.style_default : "classic"}>
                     <option value="classic">Classico (verde e neon)</option>
-                    <option value="new">Nuovo (Prima Pagina)</option>
+                    <option value="new">Pagina (carta e inchiostro, rosso)</option>
+                    <option value="bold">Volt (scuro, giallo acido, osato)</option>
+                    <option value="cds">Quotidiano (stile giornale sportivo)</option>
                   </select>
                 </label>
-                <label>Slider Classico / Nuovo visibile ai lettori
+                <label>Slider degli stili visibile ai lettori
                   <select name="style_switch" defaultValue={s.style_switch === "0" ? "0" : "1"}>
                     <option value="1">Sì (per mostrare le due versioni)</option>
                     <option value="0">No (quando avete scelto lo stile)</option>
