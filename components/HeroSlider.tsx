@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export type HeroSlide = { slug: string; title: string; image: string | null; cat: string; name: string; when: string };
+import ReliabilityBadge from "./Reliability";
+import type { Reliability } from "@/lib/types";
+
+export type HeroSlide = { slug: string; title: string; image: string | null; cat: string; name: string; when: string; reliability?: Reliability | null };
 
 const DUR = 7000;
 
@@ -38,7 +41,7 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
             </div>
             <div className="hero-cap">
               {s.name && <div className="hero-name">{s.name}</div>}
-              <span className="hero-cat">{s.cat}</span>
+              <span className="hero-cat">{s.cat}</span> <ReliabilityBadge value={s.reliability} />
               <h2 className="hero-title">{s.title}</h2>
               <div className="hero-meta">{s.when}</div>
             </div>

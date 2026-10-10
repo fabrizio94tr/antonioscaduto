@@ -31,21 +31,33 @@ export default async function Settings({ searchParams }: { searchParams: Promise
             {g.hint && <p className="updated">{g.hint}</p>}
             {g.fields.map(([k, label]) => <label key={k}>{label}<input type="text" name={k} defaultValue={s[k] ?? ""} /></label>)}
             {g.title === "Sito" && (
-              <label>Animazione del pallone nel logo
-                <select name="logo_spin" defaultValue={s.logo_spin === "1" ? "spin" : s.logo_spin}>
-                  <option value="">Fermo</option>
-                  <option value="spin">Rotola mentre scorri la pagina</option>
-                  <option value="kick">Palleggia (all&apos;apertura e al passaggio del mouse)</option>
-                </select>
-              </label>
-            )}
-            {g.title === "Sito" && (
-              <label>Intro animata all&apos;apertura (un piede calcia il pallone)
-                <select name="intro" defaultValue={s.intro === "1" ? "1" : ""}>
-                  <option value="">No</option>
-                  <option value="1">Sì, una volta per visita (si può saltare)</option>
-                </select>
-              </label>
+              <>
+                <label>Animazione del pallone nel logo
+                  <select name="logo_spin" defaultValue={["none", "spin", "kick"].includes(s.logo_spin) ? s.logo_spin : "spin"}>
+                    <option value="none">Fermo</option>
+                    <option value="spin">Rotola mentre scorri la pagina</option>
+                    <option value="kick">Palleggia (all&apos;apertura e al passaggio del mouse)</option>
+                  </select>
+                </label>
+                <label>Intro animata all&apos;apertura (il calciatore calcia il pallone)
+                  <select name="intro" defaultValue={s.intro === "0" ? "0" : "1"}>
+                    <option value="1">Sì, una volta per visita (si può saltare)</option>
+                    <option value="0">No</option>
+                  </select>
+                </label>
+                <label>Stile grafico predefinito
+                  <select name="style_default" defaultValue={s.style_default === "new" ? "new" : "classic"}>
+                    <option value="classic">Classico (verde e neon)</option>
+                    <option value="new">Nuovo (Prima Pagina)</option>
+                  </select>
+                </label>
+                <label>Slider Classico / Nuovo visibile ai lettori
+                  <select name="style_switch" defaultValue={s.style_switch === "0" ? "0" : "1"}>
+                    <option value="1">Sì (per mostrare le due versioni)</option>
+                    <option value="0">No (quando avete scelto lo stile)</option>
+                  </select>
+                </label>
+              </>
             )}
             {g.title === "Sito" && <label>Meta description della home<textarea name="meta_description" rows={3} defaultValue={s.meta_description} /></label>}
           </fieldset>

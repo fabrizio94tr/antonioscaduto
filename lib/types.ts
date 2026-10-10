@@ -1,3 +1,4 @@
+export type Reliability = "ufficiale" | "fonte" | "indiscrezione";
 export type Category = {
   id: string; slug: string; name: string; position: number; in_menu: boolean;
   description?: string | null; meta_title?: string | null; meta_description?: string | null;
@@ -11,6 +12,7 @@ export type Article = {
   image_url: string | null;
   category_id: string | null;
   featured: boolean;
+  reliability?: Reliability | null;
   breaking?: boolean;
   views?: number;
   published: boolean;

@@ -101,6 +101,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .icon-btn:hover { background: rgba(255, 255, 255, .18); transform: rotate(18deg); }
 
 .nav { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; transition: background-color .35s; }
+.nav-in { display: flex; align-items: center; gap: 4px; }
+.nav a.nav-logo { display: flex; align-items: center; gap: 8px; flex-shrink: 0; max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; padding: 0; background: none; color: var(--ink); font-family: var(--font-display); font-size: 1.2rem; font-weight: 400; letter-spacing: .01em; text-transform: uppercase; transition: max-width .35s ease, opacity .25s ease, margin .35s ease; }
+.nav a.nav-logo::after { display: none; }
+.nav a.nav-logo img { width: 22px; height: 22px; flex-shrink: 0; }
+.scrolled .nav a.nav-logo { max-width: 230px; opacity: 1; margin-right: 10px; }
+.nav-in ul { min-width: 0; flex: 1; }
 .nav ul { display: flex; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
 .nav li { flex-shrink: 0; }
 .nav a { position: relative; display: block; padding: 13px 12px; font-weight: 700; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); white-space: nowrap; transition: color .2s, background .2s; }
@@ -200,6 +206,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 :root[data-theme="dark"] .chip[data-cat="editoriale"] { color: var(--ink); background: rgba(255, 255, 255, .12); }
 :root[data-theme="dark"] .chip[data-cat="champions-league"] { color: #8db4ff; background: rgba(59, 130, 246, .15); }
 :root[data-theme="dark"] .chip[data-cat="europa-league"] { color: #fdba74; background: rgba(251, 146, 60, .14); }
+/* indice di affidabilità */
+.rel { display: inline-flex; align-items: center; gap: 6px; width: fit-content; font-family: var(--font-mono); font-size: .62rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.rel i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.rel-ufficiale { color: #0e8a43; } .rel-ufficiale i { box-shadow: 0 0 0 3px rgba(14, 138, 67, .18); }
+.rel-fonte { color: #b86a00; } .rel-fonte i { background: linear-gradient(90deg, currentColor 50%, transparent 50%); border: 1.5px solid currentColor; }
+.rel-indiscrezione { color: #6c7068; } .rel-indiscrezione i { background: transparent; border: 1.5px dashed currentColor; }
+:root[data-theme="dark"] .rel-ufficiale { color: var(--neon); } :root[data-theme="dark"] .rel-fonte { color: var(--amber); } :root[data-theme="dark"] .rel-indiscrezione { color: var(--muted); }
+.hero-cap .rel { color: #fff; margin-left: 8px; vertical-align: middle; }
 .ph { width: 100%; height: 100%; background: repeating-linear-gradient(90deg, var(--green-2) 0 22px, var(--green) 22px 44px); position: relative; }
 .ph::after { content: ""; position: absolute; left: 50%; top: 50%; width: 38%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 2px solid rgba(46, 230, 107, .35); border-radius: 50%; }
 

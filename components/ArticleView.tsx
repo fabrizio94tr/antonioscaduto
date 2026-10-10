@@ -6,6 +6,7 @@ import Cover from "./Cover";
 import MercatoRadar from "./MercatoRadar";
 import NewsItem from "./NewsItem";
 import ReadingTools from "./ReadingTools";
+import ReliabilityBadge from "./Reliability";
 import ShareButtons from "./ShareButtons";
 import ViewCounter from "./ViewCounter";
 import { readingMinutes, renderContent, stripHtml } from "@/lib/content";
@@ -30,6 +31,7 @@ export default function ArticleView({ a, related, settings, preview = false }: {
           <nav className="crumbs" aria-label="Percorso">
             <Link href="/">Home</Link>{a.category && !HIDDEN_CATEGORIES.has(a.category.slug) && <> / <Link href={`/category/${a.category.slug}`}>{a.category.name}</Link></>}
           </nav>
+          <ReliabilityBadge value={a.reliability} />
           <h1>{a.title}</h1>
           {a.excerpt && <p className="lead">{a.excerpt}</p>}
           <p className="meta">

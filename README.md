@@ -30,6 +30,14 @@ Basato sulla variante F del wireframe (verde campo + neon, ispirata a Pedullà) 
   Mercato Radar (termometro trattative), lettura con progresso/zoom/ascolto vocale, pallone che rotola con lo scroll
 - Animazioni disattivate con "riduci movimento"; stili admin separati in `app/admin/admin.css`
 
+## Due stili con slider (Classico / Nuovo)
+- Il sito ha due versioni grafiche sugli stessi contenuti, con uno slider in basso a sinistra per confrontarle (la scelta resta sul dispositivo).
+  **Classico**: verde e neon (variante F del wireframe). **Nuovo "Prima Pagina"**: carta e inchiostro, rosso vermiglio, titoli giganti, schede con ombra netta, foto in bicromia, hero a tutta larghezza.
+- Link diretti: `/?stile=nuovo` e `/?stile=classico`.
+- Dal pannello (Impostazioni → Sito): stile predefinito, slider visibile sì/no (da spegnere quando il cliente ha scelto), animazione del pallone (default: rotola), intro (default: sì).
+- Codice: `app/globals.css` (classico) e `app/style-new.css` (nuovo, attivo con `<html data-style="new">`); elementi solo-nuovo con classe `only-new`.
+- Indice di affidabilità sulle notizie (Ufficiale / Fonte diretta / Indiscrezione): campo nell'editor, badge sul sito (migrazione `005_reliability.sql`).
+
 ## Funzioni aggiuntive
 - Pagine tag/squadra (`/tag/milan`), argomenti caldi in home, sitemap indicizzate + sitemap Google News
 - Commenti con moderazione, notifiche push (ultim'ora), newsletter con invio (Resend) e disiscrizione

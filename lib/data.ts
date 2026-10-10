@@ -5,7 +5,7 @@ import type { Article, Category, Page, Transfer } from "./types";
 const byDate = (a: Article, b: Article) => +new Date(b.published_at) - +new Date(a.published_at);
 const nowIso = () => new Date().toISOString();
 /** Colonne per le liste: evita di scaricare il testo completo di ogni articolo. */
-const LIST = "id,slug,title,excerpt,image_url,category_id,featured,breaking,published,published_at,tags,author_name";
+const LIST = "id,slug,title,excerpt,image_url,category_id,featured,breaking,reliability,published,published_at,tags,author_name";
 
 export async function getCategories(): Promise<Category[]> {
   if (!hasSupabase) return demoCategories;

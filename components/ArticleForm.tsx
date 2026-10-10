@@ -144,6 +144,14 @@ export default function ArticleForm({ article, categories, siteTitle }: { articl
               <option value="">— nessuna —</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
+            <label>Affidabilità della notizia <small>(si vede come badge sul sito)</small>
+              <select name="reliability" defaultValue={article?.reliability ?? ""}>
+                <option value="">— nessuna —</option>
+                <option value="ufficiale">Ufficiale</option>
+                <option value="fonte">Fonte diretta</option>
+                <option value="indiscrezione">Indiscrezione</option>
+              </select>
+            </label>
             <label>Tag <small>(separati da virgola)</small>
               <input type="text" name="tags" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Milan, Serie A" />
             </label>

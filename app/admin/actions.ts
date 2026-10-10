@@ -63,6 +63,7 @@ export async function saveArticle(_prev: SaveState, formData: FormData): Promise
     author_name: str(formData, "author_name") || "Antonio Scaduto",
     featured: formData.get("featured") === "on",
     breaking: formData.get("breaking") === "on",
+    reliability: nul(formData, "reliability"),
     published: intent === "publish",
     published_at: when ? new Date(when).toISOString() : new Date().toISOString(),
     meta_title: nul(formData, "meta_title"),
@@ -171,7 +172,7 @@ export async function deleteTransfer(formData: FormData) {
 /* ---------- impostazioni ---------- */
 export async function saveSettings(formData: FormData) {
   const sb = await requireAdmin();
-  const keys = ["site_title", "tagline", "meta_description", "og_image", "contact_email", "facebook", "instagram", "x", "youtube", "telegram", "ga_id", "gsc_verification", "adsense_client", "ad_slot_article", "ad_slot_sidebar", "ad_slot_home", "sponsor_image", "sponsor_link", "newsletter_from", "author_name", "author_bio", "author_photo", "logo_spin", "intro"];
+  const keys = ["site_title", "tagline", "meta_description", "og_image", "contact_email", "facebook", "instagram", "x", "youtube", "telegram", "ga_id", "gsc_verification", "adsense_client", "ad_slot_article", "ad_slot_sidebar", "ad_slot_home", "sponsor_image", "sponsor_link", "newsletter_from", "author_name", "author_bio", "author_photo", "logo_spin", "intro", "style_default", "style_switch"];
   const rows = keys.map((key) => ({ key, value: str(formData, key) }));
   await sb.from("settings").upsert(rows);
   refresh();

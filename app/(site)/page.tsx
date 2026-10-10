@@ -7,6 +7,7 @@ import NewsItem from "@/components/NewsItem";
 import NewsPoller from "@/components/NewsPoller";
 import Newsletter from "@/components/Newsletter";
 import SocialCtas from "@/components/SocialCtas";
+import StatsBand from "@/components/StatsBand";
 import StandingsWidget from "@/components/StandingsWidget";
 import { fmtLong, fmtStamp, getArticles, getHotTags, getMostRead } from "@/lib/data";
 import { heroName } from "@/lib/hero";
@@ -30,7 +31,7 @@ export default async function Home() {
   const heroes = pool.slice(0, 4);
   const slides: HeroSlide[] = heroes.map((a) => ({
     slug: a.slug, title: a.title, image: a.image_url, cat: a.category?.name ?? "News",
-    name: heroName(a.title, a.tags, a.category?.name ?? ""), when: fmtStamp(a.published_at),
+    name: heroName(a.title, a.tags, a.category?.name ?? ""), when: fmtStamp(a.published_at), reliability: a.reliability,
   }));
   const used = new Set(heroes.map((a) => a.id));
   const latest = all.filter((a) => !used.has(a.id)).slice(0, 10);
@@ -44,7 +45,7 @@ export default async function Home() {
       <AdSlot slot="home" />
 
       <div className="cols">
-        <div>
+        <div className="home-main">
           {slides.length > 0 && <HeroSlider slides={slides} />}
 
           {hotTags.length > 0 && (
@@ -53,6 +54,8 @@ export default async function Home() {
               {hotTags.map((t) => <Link key={t.slug} href={`/tag/${t.slug}`}>{t.name}</Link>)}
             </nav>
           )}
+
+          <StatsBand hotTag={hotTags[0]?.name} />
 
           <h2 className="section-title"><span>Ultime notizie</span><Link href="/category/news">Tutte →</Link></h2>
           <div>{latest.slice(0, 6).map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
