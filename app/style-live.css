@@ -85,8 +85,10 @@
 /* fila squadre */
 :root[data-style="live"] .live-teams { background: var(--bg); padding: 8px 0 6px; }
 :root[data-style="live"] .live-teams .wrap { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; justify-content: space-between; }
-:root[data-style="live"] .live-teams a { flex: 0 0 auto; display: grid; place-items: center; gap: 2px; width: 46px; }
-:root[data-style="live"] .live-teams i { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: var(--t); font-style: normal; font-weight: 800; font-size: .7rem; letter-spacing: -.02em; border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--line); transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
+:root[data-style="live"] .live-teams a { flex: 0 0 auto; display: grid; place-items: center; gap: 2px; width: 50px; }
+:root[data-style="live"] .live-teams i { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); transition: transform .25s cubic-bezier(.3, 1.6, .5, 1), box-shadow .25s; }
+:root[data-style="live"] .live-teams i img { width: 28px; height: 28px; object-fit: contain; }
+:root[data-style="live"] .live-teams a:hover i { box-shadow: 0 6px 12px -6px rgba(0, 0, 0, .5); }
 :root[data-style="live"] .live-teams a:hover i { transform: translateY(-3px) scale(1.12); }
 :root[data-style="live"] .live-teams span { font-size: .56rem; text-transform: capitalize; color: var(--muted); }
 

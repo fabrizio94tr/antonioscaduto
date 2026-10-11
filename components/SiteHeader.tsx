@@ -10,7 +10,7 @@ import Ticker from "./Ticker";
 import { getCategories, getLatestPublished } from "@/lib/data";
 import { scoresEnabled } from "@/lib/scores";
 import { getSettings } from "@/lib/settings";
-import { TEAM_COLORS, textOn } from "@/lib/teams";
+import { TEAM_COLORS } from "@/lib/teams";
 
 const dateFmt = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", weekday: "long", day: "numeric", month: "long", year: "numeric" });
 const timeFmt = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" });
@@ -70,8 +70,11 @@ export default async function SiteHeader() {
       </nav>
       <div className="live-teams only-live" aria-label="Squadre">
         <div className="wrap">
-          {Object.entries(TEAM_COLORS).map(([slug, [c1]]) => (
-            <Link key={slug} href={`/tag/${slug}`} title={slug} style={{ ["--c" as string]: c1, ["--t" as string]: textOn(c1) }}><i>{slug.slice(0, 2).toUpperCase()}</i><span>{slug}</span></Link>
+          {Object.keys(TEAM_COLORS).map((slug) => (
+            <Link key={slug} href={`/tag/${slug}`} title={slug}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <i><img src={`/crests/${slug}.webp`} alt="" width={30} height={30} loading="lazy" /></i><span>{slug}</span>
+            </Link>
           ))}
         </div>
       </div>
