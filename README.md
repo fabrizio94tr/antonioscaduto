@@ -36,7 +36,7 @@ Stessi contenuti, cinque grafiche; slider in basso a sinistra (la scelta resta s
 - **Pagina** (`?stile=pagina`): carta e inchiostro, rosso vermiglio, titoli giganti.
 - **Volt** (`?stile=volt`): nero e giallo acido, hero a tutto schermo, riquadri, vetro, effetti 3D.
 - **Quotidiano** (`?stile=quotidiano`): giornale sportivo, tre colonne, rosso/nero/bianco.
-- **Diretta** (`?stile=diretta`): flusso di notizie in tempo reale stile portali di mercato; blu notte e arancio, orario in evidenza, righe fitte.
+- **Diretta** (`?stile=diretta`): flusso di notizie in tempo reale stile portali di mercato; composizione da portale di mercato: barra verde, logo centrato, fila squadre, primo piano a carte, flusso di notizie solo testo con orario, articolo con titolo serif e riga autore.
 - Effetti (`app/effects.css`): tendina di transizione tra pagine per ogni stile, barra di avanzamento, cursore a pallone (Volt), banda cinetica, count-up; disattivati con "riduci movimento".
 - Dal pannello (Impostazioni → Sito): stile predefinito, slider visibile sì/no (da spegnere quando il cliente ha scelto), animazione del pallone, intro.
 - Codice: `app/globals.css` (classico) e `app/style-new.css`, `style-bold.css`, `style-cds.css`, `style-live.css`, attivi con `<html data-style="new|bold|cds|live">`.

@@ -10,6 +10,7 @@ import Ticker from "./Ticker";
 import { getCategories, getLatestPublished } from "@/lib/data";
 import { scoresEnabled } from "@/lib/scores";
 import { getSettings } from "@/lib/settings";
+import { TEAM_COLORS, textOn } from "@/lib/teams";
 
 const dateFmt = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", weekday: "long", day: "numeric", month: "long", year: "numeric" });
 const timeFmt = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" });
@@ -33,6 +34,13 @@ export default async function SiteHeader() {
             <span>{latest ? `Aggiornato alle ${timeFmt.format(new Date(latest))}` : "Il calcio, ogni giorno"}</span>
           </div>
         </div>
+        {/* barra verde in alto: solo stile "Diretta" */}
+        <div className="live-bar only-live">
+          <div className="wrap">
+            <span className="lb-l"><Link href="/mercato" className="lb-live">Mercato live</Link><Link href="/category/news">News</Link><Link href="/category/esclusiva">Esclusive</Link></span>
+            <span className="lb-r">{[["facebook", "Facebook"], ["x", "X"], ["instagram", "Instagram"], ["youtube", "YouTube"], ["telegram", "Telegram"]].filter(([k]) => settings[k]).map(([k, l]) => <a key={k} href={settings[k]} target="_blank" rel="noopener noreferrer">{l}</a>)}</span>
+          </div>
+        </div>
         <div className="hdr-top">
           <div className="wrap hdr-in">
             <Link href="/" className="logo" aria-label={`${settings.site_title} – home`}>
@@ -46,6 +54,7 @@ export default async function SiteHeader() {
             </div>
           </div>
         </div>
+        <p className="live-date only-live">{dateFmt.format(new Date())} ore {timeFmt.format(new Date())}</p>
         <p className="tagline">{settings.tagline}</p>
       </header>
       {/* barra fissa: sibling dell'header, altrimenti "sticky" si fermerebbe con lui */}
@@ -59,6 +68,13 @@ export default async function SiteHeader() {
           <NavLinks items={items} />
         </div>
       </nav>
+      <div className="live-teams only-live" aria-label="Squadre">
+        <div className="wrap">
+          {Object.entries(TEAM_COLORS).map(([slug, [c1]]) => (
+            <Link key={slug} href={`/tag/${slug}`} title={slug} style={{ ["--c" as string]: c1, ["--t" as string]: textOn(c1) }}><i>{slug.slice(0, 2).toUpperCase()}</i><span>{slug}</span></Link>
+          ))}
+        </div>
+      </div>
       <Ticker />
       <SearchOverlay />
     </>

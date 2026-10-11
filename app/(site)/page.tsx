@@ -8,6 +8,7 @@ import NewsItem from "@/components/NewsItem";
 import NewsPoller from "@/components/NewsPoller";
 import Newsletter from "@/components/Newsletter";
 import SocialCtas from "@/components/SocialCtas";
+import TmwTop, { TmwCard } from "@/components/TmwTop";
 import StatsBand from "@/components/StatsBand";
 import StandingsWidget from "@/components/StandingsWidget";
 import { fmtLong, fmtStamp, getArticles, getHotTags, getMostRead } from "@/lib/data";
@@ -34,6 +35,7 @@ export default async function Home() {
     slug: a.slug, title: a.title, image: a.image_url, cat: a.category?.name ?? "News",
     name: heroName(a.title, a.tags, a.category?.name ?? ""), when: fmtStamp(a.published_at), reliability: a.reliability,
   }));
+  const topList = [...heroes, ...withImg(all).filter((a) => !heroes.some((h) => h.id === a.id))].slice(0, 6);
   const used = new Set(heroes.map((a) => a.id));
   const latest = all.filter((a) => !used.has(a.id)).slice(0, 10);
   const edit = editoriali[0];
@@ -47,6 +49,7 @@ export default async function Home() {
 
       <div className="cols">
         <div className="home-main">
+          <TmwTop list={topList} />
           {slides.length > 0 && <HeroSlider slides={slides} />}
 
           {hotTags.length > 0 && (
@@ -90,6 +93,15 @@ export default async function Home() {
         </div>
 
         <aside className="side">
+          {edit && (
+            <Link href={`/${edit.slug}`} className="tmw-opinion only-live">
+              <span className="av" aria-hidden>{edit.author_name?.slice(0, 1) ?? "A"}</span>
+              <span className="tt">{edit.title}</span>
+            </Link>
+          )}
+          <div className="tmw-sidecards only-live">
+            {mercato.slice(0, 2).map((m) => <TmwCard key={m.id} a={m} tag="Calciomercato" />)}
+          </div>
           <MercatoRadar />
           <StandingsWidget />
           {mostRead.length > 0 && (

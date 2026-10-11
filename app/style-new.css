@@ -19,7 +19,7 @@
 :root[data-style="new"] .widget .nl-title { font-size: .95rem; }
 
 /* ===== interruttore degli stili (visibile in tutti gli stili) ===== */
-.only-bold, .only-cds { display: none; }
+.only-bold, .only-cds, .only-live { display: none; }
 .style-switch { position: fixed; left: 14px; bottom: 14px; z-index: 3200; max-width: calc(100vw - 20px); }
 .ss-track { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); background: #0f3d24; border: 2px solid #2ee66b; border-radius: 99px; padding: 3px; box-shadow: 0 10px 30px -8px rgba(0, 0, 0, .55); transition: background .3s, border-color .3s; }
 .ss-track button { position: relative; z-index: 1; border: 0; background: none; color: rgba(255, 255, 255, .75); font-weight: 700; font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; padding: 8px 13px; border-radius: 99px; transition: color .25s; white-space: nowrap; }
@@ -34,9 +34,9 @@
 .style-switch[data-s="cds"] .ss-track { background: #111; border-color: #e3001b; }
 .style-switch[data-s="cds"] .ss-thumb { background: #e3001b; }
 .style-switch[data-s="cds"] .ss-track button[aria-checked="true"] { color: #fff; }
-.style-switch[data-s="live"] .ss-track { background: #0a2540; border-color: #ff7a00; }
-.style-switch[data-s="live"] .ss-thumb { background: #ff7a00; }
-.style-switch[data-s="live"] .ss-track button[aria-checked="true"] { color: #fff; }
+.style-switch[data-s="live"] .ss-track { background: #0a8a1f; border-color: #dcebd9; }
+.style-switch[data-s="live"] .ss-thumb { background: #dcebd9; }
+.style-switch[data-s="live"] .ss-track button[aria-checked="true"] { color: #066317; }
 .style-hint { position: absolute; left: 6px; bottom: 54px; white-space: nowrap; background: #fff; color: #15110c; font-size: .8rem; padding: 8px 13px; border-radius: 10px; box-shadow: 0 8px 26px rgba(0, 0, 0, .35); animation: rise .4s ease; }
 .style-hint i { position: absolute; left: 24px; bottom: -6px; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); }
 @media (max-width: 640px) { .style-switch { left: 8px; bottom: 8px; } .ss-track button { padding: 7px 8px; font-size: .62rem; letter-spacing: .02em; } }
