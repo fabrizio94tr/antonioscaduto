@@ -8,6 +8,7 @@ export const STYLES = [
   { id: "new", label: "Pagina" },
   { id: "bold", label: "Volt" },
   { id: "cds", label: "Quotidiano" },
+  { id: "live", label: "Diretta" },
 ] as const;
 type Style = (typeof STYLES)[number]["id"];
 const IDS: string[] = STYLES.map((s) => s.id);
@@ -15,7 +16,7 @@ const IDS: string[] = STYLES.map((s) => s.id);
 /**
  * Slider degli stili grafici: permette ai lettori (e al cliente) di confrontare le versioni del sito.
  * La scelta resta salvata sul dispositivo. Il cambio usa le View Transitions (cerchio che si allarga dal punto del click).
- * Link diretti: ?stile=classico | pagina | volt | quotidiano.
+ * Link diretti: ?stile=classico | pagina | volt | quotidiano | diretta.
  */
 export default function StyleSwitch() {
   const [style, setStyle] = useState<Style>("classic");

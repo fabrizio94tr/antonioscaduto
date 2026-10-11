@@ -34,6 +34,9 @@
 .style-switch[data-s="cds"] .ss-track { background: #111; border-color: #e3001b; }
 .style-switch[data-s="cds"] .ss-thumb { background: #e3001b; }
 .style-switch[data-s="cds"] .ss-track button[aria-checked="true"] { color: #fff; }
+.style-switch[data-s="live"] .ss-track { background: #0a2540; border-color: #ff7a00; }
+.style-switch[data-s="live"] .ss-thumb { background: #ff7a00; }
+.style-switch[data-s="live"] .ss-track button[aria-checked="true"] { color: #fff; }
 .style-hint { position: absolute; left: 6px; bottom: 54px; white-space: nowrap; background: #fff; color: #15110c; font-size: .8rem; padding: 8px 13px; border-radius: 10px; box-shadow: 0 8px 26px rgba(0, 0, 0, .35); animation: rise .4s ease; }
 .style-hint i { position: absolute; left: 24px; bottom: -6px; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); }
 @media (max-width: 640px) { .style-switch { left: 8px; bottom: 8px; } .ss-track button { padding: 7px 8px; font-size: .62rem; letter-spacing: .02em; } }
