@@ -5,7 +5,7 @@ import { fmtTime, getArticles, getBreaking } from "@/lib/data";
 export default async function Ticker() {
   const breaking = await getBreaking();
   const hot = breaking.length > 0;
-  const items = hot ? breaking : await getArticles({ limit: 8 });
+  const items = hot ? breaking : await getArticles({ limit: 5 });
   if (!items.length) return null;
   const row = (hidden: boolean) =>
     items.map((a) => (

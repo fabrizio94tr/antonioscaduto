@@ -46,7 +46,8 @@ export default async function Settings({ searchParams }: { searchParams: Promise
                   </select>
                 </label>
                 <label>Stile grafico predefinito
-                  <select name="style_default" defaultValue={["new", "bold", "cds", "live"].includes(s.style_default) ? s.style_default : "classic"}>
+                  <select name="style_default" defaultValue={["classic", "new", "bold", "cds", "live", "clean"].includes(s.style_default) ? s.style_default : "clean"}>
+                    <option value="clean">Pulita (semplice e lineare, consigliata)</option>
                     <option value="classic">Classico (verde e neon)</option>
                     <option value="new">Pagina (carta e inchiostro, rosso)</option>
                     <option value="bold">Volt (scuro, giallo acido, osato)</option>

@@ -49,6 +49,11 @@ export default async function Home() {
 
       <div className="cols">
         <div className="home-main">
+          <section className="clean-feed only-clean" aria-label="Notizie">
+            <h2 className="clean-title">News</h2>
+            <div className="nl-list">{all.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+            <Link href="/category/news" className="clean-more">Tutte le notizie</Link>
+          </section>
           <TmwTop list={topList} />
           {slides.length > 0 && <HeroSlider slides={slides} />}
 

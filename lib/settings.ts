@@ -13,8 +13,8 @@ export const DEFAULT_SETTINGS: Settings = {
   author_bio: "Segue il calcio a 360 gradi da anni: dalle serie minori alla Serie A, con un occhio sempre aperto sul mercato.",
   author_photo: "",
   logo_spin: "spin",   // none | spin | kick
-  intro: "1",          // 0 | 1
-  style_default: "classic", // classic | new
+  intro: "0",          // 0 | 1
+  style_default: "clean", // clean | classic | new | bold | cds | live
   style_switch: "1",   // 1 = mostra lo slider Classico/Nuovo, 0 = nascondi
 };
 

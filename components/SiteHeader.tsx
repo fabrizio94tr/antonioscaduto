@@ -19,7 +19,6 @@ export default async function SiteHeader() {
   const [allCats, settings, latest] = await Promise.all([getCategories(), getSettings(), getLatestPublished()]);
   const mode = settings.logo_spin === "kick" ? "kick" : settings.logo_spin === "spin" || settings.logo_spin === "1" ? "spin" : "";
   const items: NavItem[] = [
-    { href: "/mercato", label: "Mercato Live", live: true },
     ...(scoresEnabled ? [{ href: "/risultati", label: "Risultati" }] : []),
     ...allCats.filter((c) => c.in_menu).map((c) => ({ href: `/category/${c.slug}`, label: c.name })),
   ];

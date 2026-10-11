@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export const STYLES = [
+  { id: "clean", label: "Pulita" },
   { id: "classic", label: "Classico" },
   { id: "new", label: "Pagina" },
   { id: "bold", label: "Volt" },
@@ -16,7 +17,7 @@ const IDS: string[] = STYLES.map((s) => s.id);
 /**
  * Slider degli stili grafici: permette ai lettori (e al cliente) di confrontare le versioni del sito.
  * La scelta resta salvata sul dispositivo. Il cambio usa le View Transitions (cerchio che si allarga dal punto del click).
- * Link diretti: ?stile=classico | pagina | volt | quotidiano | diretta.
+ * Link diretti: ?stile=classico | pagina | volt | quotidiano | diretta | pulita.
  */
 export default function StyleSwitch() {
   const [style, setStyle] = useState<Style>("classic");
