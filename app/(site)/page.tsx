@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Cover from "@/components/Cover";
+import CleanLead from "@/components/CleanLead";
 import AdSlot from "@/components/AdSlot";
 import AuthorCard from "@/components/AuthorCard";
 import KineticBand from "@/components/KineticBandServer";
@@ -37,8 +37,9 @@ export default async function Home() {
     name: heroName(a.title, a.tags, a.category?.name ?? ""), when: fmtStamp(a.published_at), reliability: a.reliability,
   }));
   const topList = [...heroes, ...withImg(all).filter((a) => !heroes.some((h) => h.id === a.id))].slice(0, 6);
-  const cleanLead = all.find((a) => a.image_url) ?? all[0];
-  const cleanList = all.filter((a) => a.id !== cleanLead?.id);
+  const leadArts = all.filter((a) => a.image_url).slice(0, 5);
+  const leadSlides = leadArts.map((a) => ({ slug: a.slug, title: a.title, image: a.image_url, cat: a.category?.name ?? "News" }));
+  const cleanList = all.filter((a) => !leadArts.some((l) => l.id === a.id));
   const used = new Set(heroes.map((a) => a.id));
   const latest = all.filter((a) => !used.has(a.id)).slice(0, 10);
   const edit = editoriali[0];
@@ -53,15 +54,7 @@ export default async function Home() {
       <div className="cols">
         <div className="home-main">
           <section className="clean-feed only-clean" aria-label="Notizie">
-            {cleanLead && (
-              <Link href={`/${cleanLead.slug}`} className="clean-lead">
-                <span className="cl-img"><Cover src={cleanLead.image_url} alt="" priority /></span>
-                <span className="cl-cap">
-                  <em>{cleanLead.category?.name ?? "News"}</em>
-                  <strong>{cleanLead.title}</strong>
-                </span>
-              </Link>
-            )}
+            <CleanLead slides={leadSlides} />
             <h2 className="clean-title">News</h2>
             <div className="nl-list">{cleanList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
             <Link href="/category/news" className="clean-more">Tutte le notizie</Link>

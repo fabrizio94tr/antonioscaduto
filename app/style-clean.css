@@ -100,14 +100,18 @@
 :root[data-style="clean"] .clean-side .cta-btn { min-height: 77px; padding: 0 28px; border-radius: 0; font-size: 1.25rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0; }
 :root[data-style="clean"] .clean-side .cta-btn:hover { transform: none; filter: brightness(1.12); }
 
-/* apertura: foto grande con etichetta e titolo sovrimpressi */
-:root[data-style="clean"] .clean-lead { position: relative; display: block; overflow: hidden; background: var(--hdr); }
-:root[data-style="clean"] .cl-img { display: block; aspect-ratio: 16 / 9; }
-:root[data-style="clean"] .cl-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
-:root[data-style="clean"] .clean-lead:hover .cl-img img { transform: scale(1.03); }
-:root[data-style="clean"] .cl-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 90px 20px 20px; background: linear-gradient(transparent, rgba(0, 0, 0, .88)); display: flex; flex-direction: column; gap: 8px; }
+/* apertura: schede scorrevoli (swipe) con foto, etichetta e titolo sovrimpressi, puntini sotto */
+:root[data-style="clean"] .clean-lead { position: relative; background: var(--hdr); overflow: hidden; }
+:root[data-style="clean"] .cl-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+:root[data-style="clean"] .cl-track::-webkit-scrollbar { display: none; }
+:root[data-style="clean"] .cl-slide { position: relative; flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 16 / 9; overflow: hidden; display: block; background: var(--hdr); }
+:root[data-style="clean"] .cl-slide img, :root[data-style="clean"] .cl-slide .ph { width: 100%; height: 100%; object-fit: cover; display: block; }
+:root[data-style="clean"] .cl-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 120px 20px 44px; background: linear-gradient(transparent, rgba(0, 0, 0, .9)); display: flex; flex-direction: column; gap: 8px; }
 :root[data-style="clean"] .cl-cap em { font-style: normal; color: var(--neon); font-size: 1.4rem; font-weight: 600; text-transform: uppercase; line-height: 1; }
 :root[data-style="clean"] .cl-cap strong { color: #fff; font-size: clamp(1.25rem, 2.4vw, 1.7rem); font-weight: 600; line-height: 1.2; }
+:root[data-style="clean"] .cl-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 8px; pointer-events: none; }
+:root[data-style="clean"] .cl-dots button { pointer-events: auto; width: 9px; height: 9px; padding: 0; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .55); cursor: pointer; transition: background .2s, transform .2s; }
+:root[data-style="clean"] .cl-dots button.on { background: #2c5cff; transform: scale(1.25); }
 
 :root[data-style="clean"] .clean-title, :root[data-style="clean"] .section-title { display: block; margin: 40px 0 16px; padding: 14px 0 0; border: 0; border-top: 3px solid #000; background: none; color: #000; font-size: 1.125rem; font-weight: 600; letter-spacing: 0; text-transform: uppercase; line-height: 1.1; }
 :root[data-style="clean"] .section-title span { font-size: inherit; font-weight: inherit; color: inherit; letter-spacing: 0; text-transform: inherit; }
@@ -187,7 +191,11 @@
 }
 @media (max-width: 720px) {
   :root[data-style="clean"] .hdr-in { padding-top: 0; }
-  :root[data-style="clean"] .logo { font-size: 1.9rem; padding: 24px 52px 24px 0; justify-content: center; }
+  :root[data-style="clean"] .logo { font-size: 1.9rem; padding: 24px 0; justify-content: center; }
+  :root[data-style="clean"] .cl-slide { aspect-ratio: 4 / 5; }
+  :root[data-style="clean"] .cl-cap { padding: 90px 20px 42px; gap: 10px; }
+  :root[data-style="clean"] .cl-cap em { font-size: 1.15rem; }
+  :root[data-style="clean"] .cl-cap strong { font-size: 1.6rem; line-height: 1.2; }
   :root[data-style="clean"] .tagline { display: none; }
   :root[data-style="clean"] .updated { margin: 14px 0 12px; }
   :root[data-style="clean"] .nl-list { gap: 12px; }
@@ -195,8 +203,6 @@
   :root[data-style="clean"] .nl-thumb { min-height: 104px; }
   :root[data-style="clean"] .nl-body { padding: 10px 12px; gap: 6px; }
   :root[data-style="clean"] .nl-title { font-size: 1rem; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-  :root[data-style="clean"] .cl-cap { padding: 60px 14px 14px; }
-  :root[data-style="clean"] .cl-cap em { font-size: 1.1rem; }
   :root[data-style="clean"] .clean-title { margin-top: 28px; }
   :root[data-style="clean"] .prose { font-size: 1.15rem; }
 }
