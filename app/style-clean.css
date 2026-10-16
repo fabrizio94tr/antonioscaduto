@@ -207,7 +207,7 @@
 @media (max-width: 720px) {
   :root[data-style="clean"] .hdr-in { padding-top: 0; }
   :root[data-style="clean"] .logo { font-size: 1.55rem; padding: 26px 0; justify-content: center; }
-  :root[data-style="clean"] .cl-slide { aspect-ratio: 4 / 5; }
+  :root[data-style="clean"] .cl-slide { aspect-ratio: 3 / 4; }
   :root[data-style="clean"] .cl-cap { padding: 90px 22px 42px; gap: 10px; }
   :root[data-style="clean"] .cl-cap em { font-size: 1.15rem; }
   :root[data-style="clean"] .cl-cap strong { font-size: 1.6rem; line-height: 1.2; }

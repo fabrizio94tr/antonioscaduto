@@ -37,7 +37,7 @@ export default async function Home() {
     name: heroName(a.title, a.tags, a.category?.name ?? ""), when: fmtStamp(a.published_at), reliability: a.reliability,
   }));
   const topList = [...heroes, ...withImg(all).filter((a) => !heroes.some((h) => h.id === a.id))].slice(0, 6);
-  const leadArts = all.filter((a) => a.image_url).slice(0, 5);
+  const leadArts = all.filter((a) => a.image_url).slice(0, 4);
   const leadSlides = leadArts.map((a) => ({ slug: a.slug, title: a.title, image: a.image_url, cat: a.category?.name ?? "News" }));
   const cleanList = all.filter((a) => !leadArts.some((l) => l.id === a.id));
   const used = new Set(heroes.map((a) => a.id));
