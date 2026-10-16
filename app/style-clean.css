@@ -160,7 +160,7 @@
 :root[data-style="clean"] .cat-pill:hover { background: var(--hdr); color: var(--neon); }
 :root[data-style="clean"] .article h1 { font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.7rem, 4vw, 2.375rem); line-height: 1.2; letter-spacing: 0; margin: 0 0 12px; }
 :root[data-style="clean"] .article .lead { font-family: var(--font-sans); font-style: normal; font-weight: 400; font-size: 1.125rem; color: #000; margin: 0 0 14px; line-height: 1.3; }
-:root[data-style="clean"] .article .meta { font-family: var(--font-sans); font-size: .875rem; font-weight: 300; color: #000; margin-bottom: 16px; }
+:root[data-style="clean"] .article .meta { display: none; }
 :root[data-style="clean"] .article .cover { border-radius: var(--radius); margin-bottom: 32px; }
 :root[data-style="clean"] .tools-row { border: 0; }
 :root[data-style="clean"] .prose { font-family: var(--font-sans); font-weight: 300; font-size: 1.2rem; line-height: 1.5; color: #000; }
