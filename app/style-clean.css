@@ -106,7 +106,7 @@
 :root[data-style="clean"] .cl-track::-webkit-scrollbar { display: none; }
 :root[data-style="clean"] .cl-slide { position: relative; flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 16 / 9; overflow: hidden; display: block; background: var(--hdr); }
 :root[data-style="clean"] .cl-slide img, :root[data-style="clean"] .cl-slide .ph { width: 100%; height: 100%; object-fit: cover; display: block; }
-:root[data-style="clean"] .cl-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 120px 28px 44px; background: linear-gradient(transparent, rgba(0, 0, 0, .9)); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+:root[data-style="clean"] .cl-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 120px 20px 44px; background: linear-gradient(transparent, rgba(0, 0, 0, .9)); display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 8px; }
 :root[data-style="clean"] .cl-cap em { font-style: normal; color: var(--neon); font-size: 1.4rem; font-weight: 600; text-transform: uppercase; line-height: 1; }
 :root[data-style="clean"] .cl-cap strong { color: #fff; font-size: clamp(1.25rem, 2.4vw, 1.7rem); font-weight: 600; line-height: 1.2; }
 :root[data-style="clean"] .cl-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 8px; pointer-events: none; }
@@ -208,9 +208,9 @@
   :root[data-style="clean"] .hdr-in { padding-top: 0; }
   :root[data-style="clean"] .logo { font-size: 1.55rem; padding: 26px 0; justify-content: center; }
   :root[data-style="clean"] .cl-slide { aspect-ratio: 3 / 4; }
-  :root[data-style="clean"] .cl-cap { padding: 90px 22px 42px; gap: 10px; }
+  :root[data-style="clean"] .cl-cap { padding: 90px 14px 42px; gap: 8px; }
   :root[data-style="clean"] .cl-cap em { font-size: 1.15rem; }
-  :root[data-style="clean"] .cl-cap strong { font-size: 1.6rem; line-height: 1.2; }
+  :root[data-style="clean"] .cl-cap strong { font-size: 1.55rem; line-height: 1.15; font-weight: 600; }
   :root[data-style="clean"] .tagline { display: none; }
   :root[data-style="clean"] .updated { margin: 14px 0 12px; }
   :root[data-style="clean"] .nl-list { gap: 12px; }
