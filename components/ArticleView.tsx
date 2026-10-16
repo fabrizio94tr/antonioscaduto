@@ -31,6 +31,7 @@ export default function ArticleView({ a, related, settings, preview = false }: {
           <nav className="crumbs" aria-label="Percorso">
             <Link href="/">Home</Link>{a.category && !HIDDEN_CATEGORIES.has(a.category.slug) && <> / <Link href={`/category/${a.category.slug}`}>{a.category.name}</Link></>}
           </nav>
+          {a.category && !HIDDEN_CATEGORIES.has(a.category.slug) && <Link href={`/category/${a.category.slug}`} className="cat-pill only-clean">{a.category.name}</Link>}
           <ReliabilityBadge value={a.reliability} />
           <h1>{a.category && !HIDDEN_CATEGORIES.has(a.category.slug) && <span className="t-badge only-live">{a.category.name}</span>}{a.title}</h1>
           {a.excerpt && <p className="lead">{a.excerpt}</p>}
@@ -52,7 +53,7 @@ export default function ArticleView({ a, related, settings, preview = false }: {
             <span className="who"><small>Autore</small><b>{a.author_name ?? settings.author_name}</b><small>{fmtLong(a.published_at)}{a.category ? ` · ${a.category.name}` : ""}</small></span>
             {a.category && <Link href={`/category/${a.category.slug}`} className="pill">Altre notizie</Link>}
           </div>
-          <ReadingTools text={plain.slice(0, 12000)} />
+          <div className="no-clean"><ReadingTools text={plain.slice(0, 12000)} /></div>
           <div className={`prose ${dropcap ? "dropcap" : ""}`} dangerouslySetInnerHTML={{ __html: renderContent(a.content) }} />
           {!!a.tags?.length && (
             <ul className="tags">

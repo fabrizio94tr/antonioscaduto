@@ -5,6 +5,7 @@ import PushButton from "./PushButton";
 import ScrollState from "./ScrollState";
 import SearchOverlay from "./SearchOverlay";
 import SearchTrigger from "./SearchTrigger";
+import CleanMenu from "./CleanMenu";
 import ThemeToggle from "./ThemeToggle";
 import Ticker from "./Ticker";
 import { getCategories, getLatestPublished } from "@/lib/data";
@@ -46,7 +47,8 @@ export default async function SiteHeader() {
               <LogoBall mode={mode} />
               {settings.site_title}
             </Link>
-            <div className="tools">
+            <CleanMenu items={items} />
+            <div className="tools no-clean">
               <SearchTrigger />
               {process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && <PushButton vapid={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY} />}
               <ThemeToggle />
