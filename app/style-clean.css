@@ -159,7 +159,8 @@
 :root[data-style="clean"] .crumbs { display: none; }
 :root[data-style="clean"] .cat-pill { display: inline-block; margin-bottom: 24px; padding: 10px 20px; border-radius: 20px; background: var(--pill); color: #fff; font-size: .75rem; font-weight: 500; line-height: 1; text-transform: uppercase; }
 :root[data-style="clean"] .cat-pill:hover { background: var(--hdr); color: var(--neon); }
-:root[data-style="clean"] .article h1 { font-family: var(--font-sans); font-weight: 600; font-size: 2.375rem; line-height: 1.2em; letter-spacing: normal; word-spacing: normal; margin: 0 0 12px; }
+:root[data-style="clean"] .article h1 { font-family: var(--font-sans); font-weight: 600; font-size: 1.5rem; line-height: 1.2em; letter-spacing: normal; word-spacing: normal; margin: 0 0 12px; }
+@media (min-width: 721px) { :root[data-style="clean"] .article h1 { font-size: 2.375rem; } }
 :root[data-style="clean"] .article .lead { font-family: var(--font-sans); font-style: normal; font-weight: 400; font-size: 1.125rem; color: #000; margin: 0 0 14px; line-height: 1.3; }
 :root[data-style="clean"] .article .meta { display: none; }
 :root[data-style="clean"] .article .cover { border-radius: var(--radius); margin-bottom: 32px; }
