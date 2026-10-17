@@ -6,8 +6,9 @@ export default async function Comments({ articleId, slug }: { articleId: string;
   const list = await getComments(articleId);
   return (
     <section id="commenti" className="comments">
-      <h2 className="section-title"><span>Commenti ({list.length})</span></h2>
       <CommentStatus />
+      <details className="comments-box">
+        <summary>Mostra i commenti{list.length > 0 ? ` (${list.length})` : ""}</summary>
       <ul className="comment-list">
         {list.map((c) => (
           <li key={c.id}>
@@ -23,6 +24,7 @@ export default async function Comments({ articleId, slug }: { articleId: string;
         <textarea name="body" placeholder="Scrivi un commento (niente link)…" rows={4} required minLength={3} maxLength={1500} />
         <button className="btn">Invia commento</button>
       </form>
+      </details>
     </section>
   );
 }

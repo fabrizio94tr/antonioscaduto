@@ -25,7 +25,7 @@
   --muted: #999999;
   --hdr: #001c08;
   --pill: #081f2c;
-  --neon: #1fe35f;
+  --neon: #00ff48;
   --neon-ink: #001c08;
   --g: #0a9a3c;
   --accent: #0047cc;
@@ -184,11 +184,29 @@
 :root[data-style="clean"] .article .share, :root[data-style="clean"] .article .art-bar { display: none; }
 :root[data-style="clean"] .article h1 { margin-bottom: 26px; max-width: none; }
 
-/* logo come il sito attuale (Open Sans grassetto maiuscolo, slogan sotto) ma in verde */
-@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/opensans-400.ttf) format("truetype"); }
-@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/opensans-700.ttf) format("truetype"); }
-:root[data-style="clean"] .logo, :root[data-style="clean"] .footer .logo { font-family: "Open Sans", "Noto Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: 0; }
-:root[data-style="clean"] .tagline { font-family: "Open Sans", "Noto Sans", system-ui, sans-serif; font-weight: 400; font-size: .9rem; letter-spacing: 0; text-transform: uppercase; }
+/* logo e slogan come alfredopedulla.com: Titillium Web maiuscolo, verde #00ff48 su #001c08 */
+:root[data-style="clean"] .logo, :root[data-style="clean"] .footer .logo { font-family: var(--font-sans); font-weight: 700; letter-spacing: .01em; color: var(--neon); }
+:root[data-style="clean"] .tagline { font-family: var(--font-sans); font-weight: 400; font-size: .95rem; letter-spacing: 0; text-transform: uppercase; color: var(--neon); }
+
+/* commenti: pulsante "Mostra i commenti" come Pedullà, poi l'elenco e il modulo */
+:root[data-style="clean"] .comments { margin: 32px 0 8px; text-align: center; }
+:root[data-style="clean"] .comments-box > summary { display: inline-block; list-style: none; cursor: pointer; background: var(--hdr); color: #fff; font-weight: 400; text-transform: uppercase; padding: 14px 28px; border-radius: 3px; font-size: .95rem; }
+:root[data-style="clean"] .comments-box > summary::-webkit-details-marker { display: none; }
+:root[data-style="clean"] .comments-box > summary:hover { background: var(--green-2); }
+:root[data-style="clean"] .comments-box[open] > summary { margin-bottom: 20px; }
+:root[data-style="clean"] .comments-box > *:not(summary) { text-align: left; }
+:root[data-style="clean"] .comment-list { margin-bottom: 20px; }
+
+/* barra delle categorie principali al posto delle notizie "live": sempre visibile, scorrevole su telefono */
+:root[data-style="clean"] .ticker { display: none !important; }
+:root[data-style="clean"] .nav { display: block; border-bottom: 1px solid var(--line); }
+:root[data-style="clean"] .nav-in { justify-content: flex-start; overflow-x: auto; scrollbar-width: none; max-width: 1282px; }
+:root[data-style="clean"] .nav-in::-webkit-scrollbar { display: none; }
+:root[data-style="clean"] .nav ul { display: flex; flex-wrap: nowrap; }
+:root[data-style="clean"] .nav li { flex: 0 0 auto; }
+:root[data-style="clean"] .nav a { white-space: nowrap; padding: 15px 16px; }
+@media (min-width: 1024px) { :root[data-style="clean"] .nav-in { justify-content: center; } }
+@media (max-width: 720px) { :root[data-style="clean"] .nav a { font-size: 1.05rem; padding: 14px 14px; } }
 
 /* ===== footer e varie ===== */
 :root[data-style="clean"] .footer { background: var(--hdr); color: rgba(255, 255, 255, .7); border: 0; padding: 30px 0; }
