@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { slugify } from "@/lib/slug";
 import { sendPush } from "@/lib/push";
 import { SITE_URL } from "@/lib/seo";
+import { isReader } from "@/lib/roles";
 import { supabaseServer } from "@/lib/supabase";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
@@ -13,7 +14,7 @@ const nul = (f: FormData, k: string) => str(f, k) || null;
 async function requireUser() {
   const sb = await supabaseServer();
   const { data } = await sb.auth.getUser();
-  if (!data.user) redirect("/admin/login");
+  if (!data.user || isReader(data.user)) redirect("/admin/login");
   return sb;
 }
 

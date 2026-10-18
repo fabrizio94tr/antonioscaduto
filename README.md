@@ -60,3 +60,15 @@ Gli URL degli articoli restano identici a quelli attuali (`/slug-articolo`, `/ca
 
 ## Da fare con il cliente
 Logo/colori, contenuti delle pagine, migrazione articoli dal vecchio WordPress, upload immagini (Supabase Storage), editor ricco, gestione trasferimenti da admin, dominio, cookie banner e pubblicità.
+
+## Lettori registrati e commenti con login (Resend)
+- I commenti si possono scrivere solo dopo l'accesso: il lettore inserisce l'email, riceve un link (niente password) e torna all'articolo. I commenti restano **moderati** (Admin → Commenti).
+- **Sicurezza**: i lettori sono utenti Supabase con `app_metadata.role = "reader"`, assegnato in automatico dal database ai nuovi account (migrazione `supabase/migrations/006_readers.sql`, già applicata). Un lettore non entra in `/admin`, non può scrivere articoli, impostazioni, pagine, né moderare: lo bloccano il middleware, le API e le policy del database (`is_staff()`).
+- **Nuovi admin o redattori**: ora ogni account nuovo nasce "lettore". Dopo averlo creato in Supabase (Auth → Users), promuovilo dal SQL Editor:
+  `update auth.users set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}' where email = 'nome@esempio.it';` (oppure `"editor"` per un redattore, poi si disconnette e si riconnette).
+- **Invio delle email con Resend** (una volta sola, dal pannello Supabase):
+  1. Su resend.com: aggiungi e verifica il dominio (es. `antonioscaduto.com`) e crea una API key.
+  2. Supabase → Authentication → **SMTP Settings** → abilita il server SMTP personalizzato: host `smtp.resend.com`, porta `465`, utente `resend`, password = la API key, mittente `no-reply@antonioscaduto.com`, nome "Antonio Scaduto".
+  3. Supabase → Authentication → **URL Configuration**: *Site URL* = indirizzo del sito; *Redirect URLs* = `https://<sito>/auth/callback` (aggiungi anche l'indirizzo di Vercel per i test e `http://localhost:3000/auth/callback`).
+  4. Supabase → Authentication → **Email Templates** → "Magic Link": oggetto `Il tuo accesso ad Antonio Scaduto`; testo: `Ciao! Clicca qui per accedere e commentare: {{ .ConfirmationURL }} — Se non l'hai chiesto tu, ignora questa email.`
+  Senza SMTP personalizzato Supabase usa il proprio mittente, che consente poche email l'ora: va bene per provare, non per il sito vero.

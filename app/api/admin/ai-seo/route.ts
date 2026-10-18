@@ -1,10 +1,11 @@
+import { isReader } from "@/lib/roles";
 import { supabaseServer } from "@/lib/supabase";
 import { stripHtml } from "@/lib/text";
 
 export async function POST(req: Request) {
   const sb = await supabaseServer();
   const { data: auth } = await sb.auth.getUser();
-  if (!auth.user) return Response.json({ error: "Non autorizzato" }, { status: 401 });
+  if (!auth.user || isReader(auth.user)) return Response.json({ error: "Non autorizzato" }, { status: 401 });
   // Provider: OpenAI se c'è OPENAI_API_KEY (o AI_PROVIDER=openai), altrimenti Anthropic
   const openaiKey = process.env.OPENAI_API_KEY;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;

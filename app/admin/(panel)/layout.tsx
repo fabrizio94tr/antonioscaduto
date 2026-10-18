@@ -24,7 +24,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   if (!hasSupabase) return <p className="notice" style={{ margin: 24 }}>Supabase non configurato (vedi .env.example).</p>;
   const sb = await supabaseServer();
   const { data } = await sb.auth.getUser();
-  if (!data.user) redirect("/admin/login");
+  if (!data.user || data.user.app_metadata?.role === "reader") redirect("/admin/login");
   const isAdmin = (data.user.app_metadata as { role?: string } | undefined)?.role !== "editor";
   return (
     <div className="panel">

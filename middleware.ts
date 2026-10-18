@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isReader } from "@/lib/roles";
 
 export async function middleware(req: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -19,6 +20,8 @@ export async function middleware(req: NextRequest) {
   });
   const { data } = await sb.auth.getUser();
   const isLogin = req.nextUrl.pathname === "/admin/login";
+  // un lettore registrato non è redazione: niente pannello né anteprime
+  if (data.user && isReader(data.user)) return NextResponse.redirect(new URL("/", req.url));
   if (!data.user && req.nextUrl.pathname.startsWith("/anteprima")) return NextResponse.redirect(new URL("/admin/login", req.url));
   if (!data.user && !isLogin) return NextResponse.redirect(new URL("/admin/login", req.url));
   if (data.user && isLogin) return NextResponse.redirect(new URL("/admin", req.url));

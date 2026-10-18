@@ -1,29 +1,23 @@
-import { addComment } from "@/app/actions";
-import CommentStatus from "./CommentStatus";
+import CommentBox from "./CommentBox";
 import { fmtStamp, getComments } from "@/lib/data";
 
 export default async function Comments({ articleId, slug }: { articleId: string; slug: string }) {
   const list = await getComments(articleId);
   return (
     <section id="commenti" className="comments">
-      <CommentStatus />
       <details className="comments-box">
         <summary>Mostra i commenti{list.length > 0 ? ` (${list.length})` : ""}</summary>
-      <ul className="comment-list">
-        {list.map((c) => (
-          <li key={c.id}>
-            <b>{c.author}</b> <time>{fmtStamp(c.created_at)}</time>
-            <p>{c.body}</p>
-          </li>
-        ))}
-      </ul>
-      <form action={addComment} className="comment-form">
-        <input type="hidden" name="slug" value={slug} />
-        <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hp" />
-        <input type="text" name="author" placeholder="Il tuo nome" required minLength={2} maxLength={60} />
-        <textarea name="body" placeholder="Scrivi un commento (niente link)…" rows={4} required minLength={3} maxLength={1500} />
-        <button className="btn">Invia commento</button>
-      </form>
+        {list.length > 0 && (
+          <ul className="comment-list">
+            {list.map((c) => (
+              <li key={c.id}>
+                <b>{c.author}</b> <time>{fmtStamp(c.created_at)}</time>
+                <p>{c.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+        <CommentBox articleId={articleId} slug={slug} />
       </details>
     </section>
   );

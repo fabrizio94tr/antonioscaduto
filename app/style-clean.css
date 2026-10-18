@@ -249,3 +249,13 @@
 :root[data-style="clean"] aside .widget .nl-thumb { width: 80px; height: 60px; min-height: 0; aspect-ratio: auto; border-radius: 4px; overflow: hidden; align-self: start; }
 :root[data-style="clean"] aside .widget .nl-body { padding: 0; gap: 4px; justify-content: flex-start; }
 :root[data-style="clean"] aside .widget .nl-title { font-size: .95rem; line-height: 1.2; -webkit-line-clamp: 3; }
+
+/* login lettori e modulo commenti */
+:root[data-style="clean"] .reader-box { background: var(--card); border-radius: var(--radius); padding: 18px; max-width: 560px; margin: 0 auto; text-align: left; }
+:root[data-style="clean"] .reader-box h3 { font-size: 1.1rem; margin-bottom: 8px; }
+:root[data-style="clean"] .cb-note { font-size: .9rem; color: var(--muted); margin: 0 0 12px; }
+:root[data-style="clean"] .comment-form { display: grid; gap: 10px; }
+:root[data-style="clean"] .comment-form input, :root[data-style="clean"] .comment-form textarea { border: 1px solid var(--line); border-radius: 4px; padding: 11px 12px; font: inherit; background: #fff; color: var(--ink); width: 100%; }
+:root[data-style="clean"] .comment-list li { background: var(--card); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; list-style: none; }
+:root[data-style="clean"] .comment-list time { color: var(--muted); font-size: .8rem; margin-left: 8px; }
+:root[data-style="clean"] .hp { position: absolute; left: -9999px; }

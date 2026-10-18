@@ -1,3 +1,4 @@
+import { isReader } from "@/lib/roles";
 import { supabaseServer } from "@/lib/supabase";
 
 const MAX = 6 * 1024 * 1024;
@@ -6,7 +7,7 @@ const TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png",
 export async function POST(req: Request) {
   const sb = await supabaseServer();
   const { data: auth } = await sb.auth.getUser();
-  if (!auth.user) return Response.json({ error: "Non autorizzato" }, { status: 401 });
+  if (!auth.user || isReader(auth.user)) return Response.json({ error: "Non autorizzato" }, { status: 401 });
 
   const file = (await req.formData()).get("file");
   if (!(file instanceof File)) return Response.json({ error: "Nessun file" }, { status: 400 });
