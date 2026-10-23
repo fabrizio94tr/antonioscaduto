@@ -246,7 +246,7 @@
   :root[data-style="clean"] .updated { margin: 14px 0 12px; }
   :root[data-style="clean"] .nl-list { gap: 12px; }
   :root[data-style="clean"] .nl-item { grid-template-columns: 124px minmax(0, 1fr); min-height: 0; }
-  :root[data-style="clean"] .nl-thumb { aspect-ratio: 1 / 1; align-self: stretch; height: auto; }
+  :root[data-style="clean"] .nl-thumb { aspect-ratio: auto; width: 124px; justify-self: start; align-self: stretch; height: auto; min-height: 124px; }
   :root[data-style="clean"] .nl-body { padding: 10px 12px; gap: 6px; }
   :root[data-style="clean"] .nl-title { font-size: 1rem; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
   :root[data-style="clean"] .clean-title { margin-top: 28px; }
