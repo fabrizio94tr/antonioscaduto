@@ -213,10 +213,11 @@
 :root[data-style="clean"] .nav a { white-space: nowrap; padding: 15px 16px; }
 @media (min-width: 1024px) { :root[data-style="clean"] .nav-in { justify-content: center; } }
 @media (max-width: 720px) {
-  :root[data-style="clean"] .nav-in { padding: 0 6px; }
-  :root[data-style="clean"] .nav ul { justify-content: space-between; }
-  :root[data-style="clean"] .nav li { flex: 0 1 auto; }
-  :root[data-style="clean"] .nav a { font-size: clamp(9px, 2.5vw, 15px); padding: 12px 3px; }
+  /* 6 voci a dimensione normale: due righe da 3, sempre visibili (la barra resta fissa in alto) */
+  :root[data-style="clean"] .nav-in { padding: 0 8px; }
+  :root[data-style="clean"] .nav ul { display: grid; grid-template-columns: repeat(3, 1fr); justify-content: stretch; }
+  :root[data-style="clean"] .nav li { flex: none; text-align: center; }
+  :root[data-style="clean"] .nav a { display: block; font-size: 13.5px; padding: 9px 2px; }
 }
 
 /* ===== footer e varie ===== */
