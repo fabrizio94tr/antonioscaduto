@@ -34,7 +34,7 @@ export default async function CategoryPage({ params, searchParams }: P) {
       </section>
       <main className="wrap">
         {articles.length === 0 && <p style={{ padding: 20 }}>Nessun articolo in questa categoria.</p>}
-        <div style={{ maxWidth: 860 }}>{articles.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+        <div className="nl-list" style={{ maxWidth: 860 }}>{articles.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
         <Pagination page={page} total={total} size={SIZE} href={(p) => `/category/${slug}${p > 1 ? `?pagina=${p}` : ""}`} />
       </main>
     </>

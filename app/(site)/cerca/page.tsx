@@ -25,7 +25,7 @@ export default async function Cerca({ searchParams }: { searchParams: Promise<{ 
         <button className="btn">Cerca</button>
       </form>
       {q && results.length === 0 && <p className="updated">Nessun risultato per “{q}”.</p>}
-      <div style={{ maxWidth: 860 }}>{results.map((a, n) => <NewsItem key={a.id} a={a} i={n} />)}</div>
+      <div className="nl-list" style={{ maxWidth: 860 }}>{results.map((a, n) => <NewsItem key={a.id} a={a} i={n} />)}</div>
       <Pagination page={page} total={hasMore ? (page + 1) * SIZE : page * SIZE} size={SIZE} href={(p) => `/cerca?q=${encodeURIComponent(q)}&pagina=${p}`} />
     </main>
   );

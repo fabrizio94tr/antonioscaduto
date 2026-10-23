@@ -38,7 +38,7 @@ export default async function TagPage({ params, searchParams }: P) {
         </div>
       </section>
       <main className="wrap">
-        <div style={{ maxWidth: 860 }}>{articles.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
+        <div className="nl-list" style={{ maxWidth: 860 }}>{articles.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
         <Pagination page={page} total={tag.n} size={SIZE} href={(p) => `/tag/${slug}${p > 1 ? `?pagina=${p}` : ""}`} />
       </main>
     </>
