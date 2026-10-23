@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 type Choice = { analytics: boolean; marketing: boolean };
 const KEY = "cookie-consent-v1";
+const MAX_AGE = 1000 * 60 * 60 * 24 * 182; // il consenso va richiesto di nuovo dopo circa 6 mesi (Garante privacy)
 
 declare global {
   interface Window { dataLayer?: unknown[]; gtag?: (...a: unknown[]) => void; __consent?: Choice; adsbygoogle?: unknown[] }
@@ -24,7 +25,11 @@ export default function Consent({ gaId, adsClient }: { gaId: string; adsClient: 
   const [custom, setCustom] = useState<Choice>({ analytics: false, marketing: false });
 
   useEffect(() => {
-    try { const raw = localStorage.getItem(KEY); setChoice(raw ? (JSON.parse(raw) as Choice) : null); } catch { setChoice(null); }
+    try {
+      const raw = localStorage.getItem(KEY);
+      const saved = raw ? (JSON.parse(raw) as Choice & { at?: number }) : null;
+      setChoice(saved && saved.at && Date.now() - saved.at < MAX_AGE ? { analytics: !!saved.analytics, marketing: !!saved.marketing } : null);
+    } catch { setChoice(null); }
     const reopen = () => setOpen(true);
     window.addEventListener("open-consent", reopen);
     return () => window.removeEventListener("open-consent", reopen);
@@ -47,7 +52,7 @@ export default function Consent({ gaId, adsClient }: { gaId: string; adsClient: 
   }, [choice, gaId, adsClient]);
 
   const save = (c: Choice) => {
-    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch {}
+    try { localStorage.setItem(KEY, JSON.stringify({ ...c, at: Date.now() })); } catch {}
     setChoice(c); setOpen(false);
   };
 

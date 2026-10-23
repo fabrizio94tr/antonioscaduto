@@ -74,6 +74,7 @@ export default function CommentBox({ articleId, slug }: { articleId: string; slu
             <p className="cb-note">Inserisci la tua email: ti inviamo un link per accedere, senza password.</p>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="La tua email" autoComplete="email" required />
             <button className="btn" disabled={busy}>{busy ? "Invio…" : "Accedi"}</button>
+            <p className="cb-note">Continuando dichiari di aver letto l&apos;<a href="/privacy-policy">informativa privacy</a> e le <a href="/note-legali">note legali</a> sui commenti.</p>
           </form>
         )}
         {msg && <p className={`notice${msg.ok ? " ok" : ""}`}>{msg.t}</p>}

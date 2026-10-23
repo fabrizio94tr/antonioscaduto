@@ -529,3 +529,4 @@ main { animation: pageIn .4s ease both; }
 .intro-skip { position: absolute; right: 18px; bottom: 18px; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .7); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .2); padding: 7px 14px; border-radius: 99px; }
 .intro-skip:hover { color: var(--neon); border-color: var(--neon); }
 @media (prefers-reduced-motion: reduce) { .intro-on .intro-splash { display: none; } }
+.nl-priv { font-size: .78rem; opacity: .75; margin: 8px 0 0; line-height: 1.4; }

@@ -7,6 +7,7 @@ const links = [
   ["contatti", "Contatti"],
   ["privacy-policy", "Privacy Policy"],
   ["cookie-policy", "Cookie Policy"],
+  ["note-legali", "Note legali"],
 ];
 
 
