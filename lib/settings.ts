@@ -15,7 +15,7 @@ export const DEFAULT_SETTINGS: Settings = {
   logo_spin: "spin",   // none | spin | kick
   intro: "0",          // 0 | 1
   style_default: "clean", // clean | classic | new | bold | cds | live
-  style_switch: "1",   // 1 = mostra lo slider Classico/Nuovo, 0 = nascondi
+  style_switch: "0",   // 1 = mostra lo slider degli stili, 0 = nascondi (sito solo in stile Pulita)
 };
 
 export const getSettings = cache(async function getSettings(): Promise<Settings> {
