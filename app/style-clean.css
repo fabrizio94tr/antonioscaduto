@@ -273,3 +273,4 @@
 @media (min-width: 768px) { :root[data-style="clean"] .article h1 { font-size: 38px; } }
 /* come Pedullà: i titoli vanno a capo in modo naturale, senza bilanciamento */
 :root[data-style="clean"] .article h1, :root[data-style="clean"] .nl-title, :root[data-style="clean"] .cl-cap strong, :root[data-style="clean"] .hero-title { text-wrap: wrap; }
+:root[data-style="clean"] .nav ul { mask-image: none; -webkit-mask-image: none; overflow: visible; }
