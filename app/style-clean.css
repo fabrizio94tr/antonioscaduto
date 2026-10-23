@@ -213,8 +213,7 @@
 :root[data-style="clean"] .nav a { white-space: nowrap; padding: 15px 16px; }
 @media (min-width: 1024px) { :root[data-style="clean"] .nav-in { justify-content: center; } }
 @media (max-width: 720px) {
-  /* come Pedullà: una sola riga (si scorre di lato), barra sempre fissa in alto */
-  :root[data-style="clean"] .nav { position: -webkit-sticky; position: sticky; top: 0; }
+  /* come Pedullà: una sola riga (si scorre di lato), la barra scorre con la pagina */
   :root[data-style="clean"] .nav-in { padding: 0; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; }
   :root[data-style="clean"] .nav ul { display: flex; flex-wrap: nowrap; width: max-content; justify-content: flex-start; padding: 0 6px; }
   :root[data-style="clean"] .nav li { flex: 0 0 auto; }
@@ -276,3 +275,6 @@
 /* come Pedullà: i titoli vanno a capo in modo naturale, senza bilanciamento */
 :root[data-style="clean"] .article h1, :root[data-style="clean"] .nl-title, :root[data-style="clean"] .cl-cap strong, :root[data-style="clean"] .hero-title { text-wrap: wrap; }
 :root[data-style="clean"] .nav ul { mask-image: none; -webkit-mask-image: none; overflow: visible; }
+
+/* la barra delle categorie NON resta fissa: scorre via con la pagina */
+:root[data-style="clean"] .nav { position: static; }
