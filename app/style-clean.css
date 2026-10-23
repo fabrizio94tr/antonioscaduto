@@ -213,11 +213,12 @@
 :root[data-style="clean"] .nav a { white-space: nowrap; padding: 15px 16px; }
 @media (min-width: 1024px) { :root[data-style="clean"] .nav-in { justify-content: center; } }
 @media (max-width: 720px) {
-  /* 6 voci a dimensione normale: due righe da 3, sempre visibili (la barra resta fissa in alto) */
-  :root[data-style="clean"] .nav-in { padding: 0 8px; }
-  :root[data-style="clean"] .nav ul { display: grid; grid-template-columns: repeat(3, 1fr); justify-content: stretch; }
-  :root[data-style="clean"] .nav li { flex: none; text-align: center; }
-  :root[data-style="clean"] .nav a { display: block; font-size: 13.5px; padding: 9px 2px; }
+  /* come Pedullà: una sola riga (si scorre di lato), barra sempre fissa in alto */
+  :root[data-style="clean"] .nav { position: -webkit-sticky; position: sticky; top: 0; }
+  :root[data-style="clean"] .nav-in { padding: 0; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; }
+  :root[data-style="clean"] .nav ul { display: flex; flex-wrap: nowrap; width: max-content; justify-content: flex-start; padding: 0 6px; }
+  :root[data-style="clean"] .nav li { flex: 0 0 auto; }
+  :root[data-style="clean"] .nav a { display: block; font-size: 15px; padding: 14px 12px; }
 }
 
 /* ===== footer e varie ===== */
