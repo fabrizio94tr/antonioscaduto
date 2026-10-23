@@ -72,3 +72,12 @@ Logo/colori, contenuti delle pagine, migrazione articoli dal vecchio WordPress, 
   3. Supabase → Authentication → **URL Configuration**: *Site URL* = indirizzo del sito; *Redirect URLs* = `https://<sito>/auth/callback` (aggiungi anche l'indirizzo di Vercel per i test e `http://localhost:3000/auth/callback`).
   4. Supabase → Authentication → **Email Templates** → "Magic Link": oggetto `Il tuo accesso ad Antonio Scaduto`; testo: `Ciao! Clicca qui per accedere e commentare: {{ .ConfirmationURL }} — Se non l'hai chiesto tu, ignora questa email.`
   Senza SMTP personalizzato Supabase usa il proprio mittente, che consente poche email l'ora: va bene per provare, non per il sito vero.
+
+## AdSense e consenso (Google Funding Choices)
+
+Con AdSense il consenso ai cookie lo gestisce **Google Funding Choices** (CMP certificata IAB TCF, obbligatoria per gli annunci nell'UE). Il banner proprio del sito si disattiva da solo quando in Admin → Impostazioni è impostato il codice AdSense (`ca-pub-…`).
+
+1. Admin → Impostazioni: inserisci il codice editore AdSense (`ca-pub-XXXXXXXXXXXXXXXX`) e, se vuoi, l'ID Google Analytics.
+2. In AdSense: **Privacy e messaggi → Normative europee**: crea il messaggio di consenso (scegli "Consenti, Rifiuta, Gestisci"), seleziona il sito e **pubblica**. Se usi Analytics, attiva anche i fini "Misurazione".
+3. In AdSense: **Siti → antonioscaduto.com**: verifica il sito. Il file `/ads.txt` viene generato in automatico dal codice editore.
+4. Il pulsante "Gestisci cookie" in fondo al sito riapre il messaggio di Google.

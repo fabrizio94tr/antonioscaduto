@@ -7,7 +7,7 @@ const KEY = "cookie-consent-v1";
 const MAX_AGE = 1000 * 60 * 60 * 24 * 182; // il consenso va richiesto di nuovo dopo circa 6 mesi (Garante privacy)
 
 declare global {
-  interface Window { dataLayer?: unknown[]; gtag?: (...a: unknown[]) => void; __consent?: Choice; adsbygoogle?: unknown[] }
+  interface Window { dataLayer?: unknown[]; gtag?: (...a: unknown[]) => void; __consent?: Choice; adsbygoogle?: unknown[]; __fc?: boolean; googlefc?: { callbackQueue?: unknown[]; showRevocationMessage?: () => void } }
 }
 
 function loadScript(src: string, id: string, attrs: Record<string, string> = {}) {
@@ -19,12 +19,37 @@ function loadScript(src: string, id: string, attrs: Record<string, string> = {})
 }
 
 export default function Consent({ gaId, adsClient }: { gaId: string; adsClient: string }) {
-  const needed = Boolean(gaId || adsClient);
+  // Con AdSense il consenso lo gestisce Google Funding Choices (CMP certificata IAB TCF): niente banner proprio.
+  const fc = Boolean(adsClient);
+  const needed = !fc && Boolean(gaId);
   const [choice, setChoice] = useState<Choice | null | undefined>(undefined); // undefined = non ancora letto
   const [open, setOpen] = useState(false);
   const [custom, setCustom] = useState<Choice>({ analytics: false, marketing: false });
 
   useEffect(() => {
+    if (!fc) return;
+    window.__fc = true;
+    const pub = adsClient.replace(/^ca-/, "");
+    // Consent Mode v2: tutto negato finché Funding Choices non comunica la scelta dell'utente
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer!.push(arguments); };
+    window.gtag("consent", "default", { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "denied", wait_for_update: 500 });
+    loadScript(`https://fundingchoicesmessages.google.com/i/${pub}?ers=1`, "fc-script");
+    // iframe "segnale" richiesto da Funding Choices
+    if (!document.querySelector('iframe[name="googlefcPresent"]')) {
+      const f = document.createElement("iframe"); f.name = "googlefcPresent"; f.style.cssText = "display:none;width:0;height:0;border:0"; f.setAttribute("aria-hidden", "true"); f.tabIndex = -1; document.body.appendChild(f);
+    }
+    loadScript(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsClient}`, "ads-script", { crossorigin: "anonymous" });
+    if (gaId) {
+      window.gtag("js", new Date());
+      window.gtag("config", gaId, { anonymize_ip: true });
+      loadScript(`https://www.googletagmanager.com/gtag/js?id=${gaId}`, "ga-script");
+    }
+    window.dispatchEvent(new Event("consent-change"));
+  }, [fc, adsClient, gaId]);
+
+  useEffect(() => {
+    if (fc) return;
     try {
       const raw = localStorage.getItem(KEY);
       const saved = raw ? (JSON.parse(raw) as Choice & { at?: number }) : null;
@@ -33,10 +58,10 @@ export default function Consent({ gaId, adsClient }: { gaId: string; adsClient: 
     const reopen = () => setOpen(true);
     window.addEventListener("open-consent", reopen);
     return () => window.removeEventListener("open-consent", reopen);
-  }, []);
+  }, [fc]);
 
   useEffect(() => {
-    if (!choice) return;
+    if (fc || !choice) return;
     window.__consent = choice;
     if (choice.analytics && gaId) {
       window.dataLayer = window.dataLayer || [];
@@ -49,7 +74,7 @@ export default function Consent({ gaId, adsClient }: { gaId: string; adsClient: 
       loadScript(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsClient}`, "ads-script", { crossorigin: "anonymous" });
     }
     window.dispatchEvent(new Event("consent-change"));
-  }, [choice, gaId, adsClient]);
+  }, [fc, choice, gaId, adsClient]);
 
   const save = (c: Choice) => {
     try { localStorage.setItem(KEY, JSON.stringify({ ...c, at: Date.now() })); } catch {}

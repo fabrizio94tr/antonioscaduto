@@ -6,7 +6,7 @@ export default function AdUnit({ client, slot }: { client: string; slot: string 
   const ref = useRef<HTMLModElement>(null);
   useEffect(() => {
     const push = () => {
-      if (!window.__consent?.marketing || !ref.current || ref.current.dataset.done) return;
+      if (!(window.__fc || window.__consent?.marketing) || !ref.current || ref.current.dataset.done) return;
       ref.current.dataset.done = "1";
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
     };
