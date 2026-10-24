@@ -53,8 +53,7 @@
 :root[data-style="clean"] .site-hdr { background: var(--hdr); border: 0; position: relative; }
 :root[data-style="clean"] .hdr-top { padding: 0; }
 :root[data-style="clean"] .hdr-in { text-align: center; padding-top: 22px; padding-bottom: 0; max-width: 1282px; }
-:root[data-style="clean"] .logo-mark { display: block; flex: none; width: clamp(44px, 4.6vw, 62px); height: auto; aspect-ratio: 1; }
-:root[data-style="clean"] .logo { display: inline-flex; align-items: center; gap: 14px; justify-content: center; color: var(--neon); font-weight: 700; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
+:root[data-style="clean"] .logo { justify-content: center; color: var(--neon); font-weight: 700; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
 :root[data-style="clean"] .tagline { display: block; text-align: center; margin: 0; padding: 4px 16px 20px; color: var(--neon); font-weight: 400; font-size: 1rem; letter-spacing: 0; text-transform: uppercase; }
 :root[data-style="clean"] .clean-burger { position: absolute; right: 3%; top: 50%; transform: translateY(-50%); z-index: 20; width: 44px; height: 44px; display: grid; place-items: center; color: #fff; background: transparent; border: 0; cursor: pointer; }
 :root[data-style="clean"] .clean-burger svg path { transition: transform .3s ease-in-out, opacity .3s ease-in-out; transform-origin: center; transform-box: fill-box; }
@@ -238,9 +237,7 @@
 }
 @media (max-width: 720px) {
   :root[data-style="clean"] .hdr-in { padding-top: 0; }
-  :root[data-style="clean"] .logo { font-size: 1.4rem; padding: 20px 0; justify-content: center; gap: 9px; }
-  :root[data-style="clean"] .hdr-in { padding-right: 44px; padding-left: 44px; }
-  :root[data-style="clean"] .logo-mark { width: 40px; }
+  :root[data-style="clean"] .logo { font-size: 1.55rem; padding: 26px 0; justify-content: center; }
   :root[data-style="clean"] .cl-slide { aspect-ratio: 4 / 5; }
   :root[data-style="clean"] .cl-cap { padding: 90px 14px 42px; gap: 8px; }
   :root[data-style="clean"] .cl-cap em { font-size: .9rem; }
@@ -317,5 +314,3 @@
 :root[data-style="clean"] .searchbox { display: flex; gap: 8px; margin: 0 0 20px; max-width: 860px; }
 :root[data-style="clean"] .searchbox input { flex: 1; min-width: 0; font-size: 1rem; padding: 12px 14px; border: 1px solid #cfd3d8; background: #fff; }
 :root[data-style="clean"] .searchbox .btn { padding: 0 18px; font-size: .95rem; }
-:root[data-style="clean"] .footer .logo { display: flex; align-items: center; justify-content: flex-start; gap: 12px; }
-:root[data-style="clean"] .footer .logo-mark { width: 44px; }
