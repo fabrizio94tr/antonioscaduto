@@ -18,6 +18,7 @@ const nav: [string, string, boolean][] = [
   ["/admin/categorie", "🏷 Categorie", true],
   ["/admin/newsletter", "✉️ Newsletter", true],
   ["/admin/impostazioni", "⚙️ Impostazioni", true],
+  ["/admin/account", "🔑 Password", false],
 ];
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {

@@ -42,6 +42,17 @@ export async function logout() {
   redirect("/admin/login");
 }
 
+export async function changePassword(formData: FormData) {
+  const sb = await requireUser();
+  const pw = String(formData.get("password") ?? "");
+  const err = (m: string) => redirect("/admin/account?errore=" + encodeURIComponent(m));
+  if (pw.length < 10) err("La password deve avere almeno 10 caratteri.");
+  if (pw !== String(formData.get("password2") ?? "")) err("Le due password non coincidono.");
+  const { error } = await sb.auth.updateUser({ password: pw });
+  if (error) err(error.code === "same_password" ? "La nuova password è uguale a quella attuale." : "Password non accettata: " + error.message);
+  redirect("/admin/account?ok=1");
+}
+
 /* ---------- articoli ---------- */
 export type SaveState = { error?: string } | null;
 

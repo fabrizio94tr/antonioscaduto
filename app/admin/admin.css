@@ -89,7 +89,7 @@ textarea.source { min-height: 420px; font-family: ui-monospace, monospace !impor
 .btn-row { display: flex; gap: 8px; }
 .btn-row .btn { flex: 1; }
 @media (max-width: 1000px) {
-  .panel { grid-template-columns: 1fr; }
+  .panel { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .panel-nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; }
   .panel-nav nav { display: flex; flex-wrap: wrap; }
   .panel-foot { margin: 0; }
