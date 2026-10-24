@@ -1,4 +1,5 @@
 import sanitizeHtml from "sanitize-html";
+import { isAdFrame } from "./clean-html";
 
 export { stripHtml, wordCount, readingMinutes, autoDescription } from "./text";
 
@@ -17,6 +18,8 @@ export function renderContent(raw: string): string {
       iframe: ["src", "width", "height", "allowfullscreen", "title"],
     },
     allowedIframeHostnames: ["www.youtube.com", "www.youtube-nocookie.com", "player.vimeo.com", "open.spotify.com"],
+    // pubblicità rimasta dal copia-incolla da altri siti
+    exclusiveFilter: isAdFrame,
     transformTags: {
       img: (tag, attribs) => ({ tagName: tag, attribs: { ...attribs, loading: "lazy" } }),
       a: (tag, attribs) => ({

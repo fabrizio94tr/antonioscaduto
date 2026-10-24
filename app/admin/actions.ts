@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { slugify } from "@/lib/slug";
 import { fromRomeInput } from "@/lib/rome-time";
+import { stripAds } from "@/lib/clean-html";
 import { sendPush } from "@/lib/push";
 import { SITE_URL } from "@/lib/seo";
 import { isReader } from "@/lib/roles";
@@ -54,6 +55,24 @@ export async function changePassword(formData: FormData) {
 }
 
 /* ---------- articoli ---------- */
+const IMG_EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/avif": "avif" };
+
+/** Copertina presa da un altro sito: la copia nel nostro archivio immagini (niente dipendenze da server altrui). */
+async function localImage(sb: Awaited<ReturnType<typeof supabaseServer>>, url: string | null, slug: string): Promise<string | null> {
+  if (!url || !/^https?:\/\//.test(url) || url.includes(".supabase.co/")) return url;
+  try {
+    const r = await fetch(url.replace(/&amp;/g, "&"), { signal: AbortSignal.timeout(10000) });
+    const type = (r.headers.get("content-type") ?? "").split(";")[0];
+    const buf = await r.arrayBuffer();
+    if (!r.ok || !IMG_EXT[type] || buf.byteLength > 8 * 1024 * 1024) return url;
+    const path = `covers/${slug.slice(0, 80)}-${Math.random().toString(36).slice(2, 7)}.${IMG_EXT[type]}`;
+    const { error } = await sb.storage.from("media").upload(path, buf, { contentType: type, cacheControl: "31536000" });
+    return error ? url : sb.storage.from("media").getPublicUrl(path).data.publicUrl;
+  } catch {
+    return url;
+  }
+}
+
 export type SaveState = { error?: string } | null;
 
 export async function saveArticle(_prev: SaveState, formData: FormData): Promise<SaveState> {
@@ -69,8 +88,8 @@ export async function saveArticle(_prev: SaveState, formData: FormData): Promise
     title,
     slug,
     excerpt: nul(formData, "excerpt"),
-    content: String(formData.get("content") ?? ""),
-    image_url: nul(formData, "image_url"),
+    content: stripAds(String(formData.get("content") ?? "")),
+    image_url: await localImage(sb, nul(formData, "image_url"), slug),
     category_id: nul(formData, "category_id"),
     tags: str(formData, "tags").split(",").map((t) => t.trim()).filter(Boolean),
     author_name: str(formData, "author_name") || "Antonio Scaduto",
@@ -82,7 +101,7 @@ export async function saveArticle(_prev: SaveState, formData: FormData): Promise
     meta_title: nul(formData, "meta_title"),
     meta_description: nul(formData, "meta_description"),
     canonical_url: nul(formData, "canonical_url"),
-    og_image_url: nul(formData, "og_image_url"),
+    og_image_url: await localImage(sb, nul(formData, "og_image_url"), slug + "-og"),
     noindex: formData.get("noindex") === "on",
     focus_keyword: nul(formData, "focus_keyword"),
   };
