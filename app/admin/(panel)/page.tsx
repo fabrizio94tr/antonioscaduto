@@ -26,7 +26,7 @@ export default async function Overview() {
         <Link href="/admin/articoli?stato=pubblicati"><b>{published}</b><span>Pubblicati</span></Link>
         <Link href="/admin/articoli?stato=bozze"><b>{drafts}</b><span>Bozze</span></Link>
         <Link href="/admin/articoli?stato=programmati"><b>{scheduled}</b><span>Programmati</span></Link>
-        <Link href="/admin/iscritti"><b>{subs}</b><span>Iscritti newsletter</span></Link>
+        <Link href="/admin/newsletter"><b>{subs}</b><span>Iscritti newsletter</span></Link>
       </div>
       {noDesc > 0 && (
         <p className="notice">
