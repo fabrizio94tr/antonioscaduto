@@ -2,6 +2,8 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
+export const metadata = { title: "Pagina non trovata", robots: { index: false } };
+
 export default function NotFound() {
   return (
     <>

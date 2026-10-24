@@ -1,17 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { saveArticle, deleteArticle } from "@/app/admin/actions";
 import type { Article, Category } from "@/lib/types";
 import { slugify } from "@/lib/slug";
+import { toRomeInput } from "@/lib/rome-time";
 import RichEditor, { uploadImage } from "./admin/RichEditor";
 import SeoPanel from "./admin/SeoPanel";
-
-const toLocal = (iso: string) => {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
-};
 
 function Counter({ value, max }: { value: string; max: number }) {
   return <span className={`counter ${value.length > max ? "over" : ""}`}>{value.length}/{max}</span>;
@@ -32,6 +27,9 @@ export default function ArticleForm({ article, categories, siteTitle }: { articl
   const [tags, setTags] = useState(article?.tags?.join(", ") ?? "");
   const [uploading, setUploading] = useState<"" | "cover" | "og">("");
   const [aiBusy, setAiBusy] = useState(false);
+  // React non trasmette sempre il pulsante premuto: la scelta (bozza/pubblica) viaggia anche in un campo nascosto
+  const intentRef = useRef<HTMLInputElement>(null);
+  const choose = (v: "draft" | "publish") => () => { if (intentRef.current) intentRef.current.value = v; };
 
   const suggest = async () => {
     setAiBusy(true);
@@ -126,12 +124,13 @@ export default function ArticleForm({ article, categories, siteTitle }: { articl
             <p className="status-line">
               Stato: <span className="badge">{!article ? "Nuovo" : isPublished ? (new Date(article.published_at) > new Date() ? "Programmato" : "Pubblicato") : "Bozza"}</span>
             </p>
-            <label>Data e ora <small>(futura = programmato)</small>
-              <input type="datetime-local" name="published_at" defaultValue={toLocal(article?.published_at ?? new Date().toISOString())} />
+            <label>Data e ora <small>(ora italiana; futura = programmato)</small>
+              <input type="datetime-local" name="published_at" defaultValue={toRomeInput(article?.published_at ?? new Date().toISOString())} />
             </label>
+            <input type="hidden" name="intent" ref={intentRef} defaultValue={isPublished ? "publish" : "draft"} />
             <div className="btn-row">
-              <button className="btn ghost" name="intent" value="draft" disabled={pending}>Salva bozza</button>
-              <button className="btn" name="intent" value="publish" disabled={pending}>{isPublished ? "Aggiorna" : "Pubblica"}</button>
+              <button className="btn ghost" name="intent" value="draft" onClick={choose("draft")} disabled={pending}>Salva bozza</button>
+              <button className="btn" name="intent" value="publish" onClick={choose("publish")} disabled={pending}>{isPublished ? "Aggiorna" : "Pubblica"}</button>
             </div>
             {article && isPublished && (
               <p><a href={`/${article.slug}`} target="_blank" rel="noopener noreferrer" className="tag">Vedi sul sito ↗</a></p>

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const metadata = { title: "Iscrizione newsletter", robots: { index: false } };
+
 export default async function Iscrizione({ searchParams }: { searchParams: Promise<{ esito?: string }> }) {
   const { esito } = await searchParams;
   return (

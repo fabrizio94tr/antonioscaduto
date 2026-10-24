@@ -14,6 +14,7 @@ import StatsBand from "@/components/StatsBand";
 import StandingsWidget from "@/components/StandingsWidget";
 import { fmtLong, fmtStamp, getArticles, getHotTags, getMostRead } from "@/lib/data";
 import { heroName } from "@/lib/hero";
+import { getSettings } from "@/lib/settings";
 
 export const revalidate = 60;
 
@@ -27,6 +28,7 @@ export default async function Home() {
     getMostRead(5),
     getHotTags(14),
   ]);
+  const site = await getSettings();
 
   // hero: articoli "in evidenza" (con immagine), altrimenti le ultime con immagine
   const withImg = (l: typeof all) => l.filter((a) => a.image_url);
@@ -48,6 +50,7 @@ export default async function Home() {
 
   return (
     <main className="wrap">
+      <h1 className="sr-only">{site.site_title}{site.tagline ? ` – ${site.tagline}` : ""}</h1>
       {all[0] && <p className="updated">Ultimo aggiornamento: {fmtLong(all[0].published_at)}</p>}
       <AdSlot slot="home" />
 

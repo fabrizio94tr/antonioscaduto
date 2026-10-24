@@ -84,7 +84,7 @@ export default function ArticleView({ a, related, settings, preview = false }: {
           <AdSlot slot="article" />
           <ShareButtons title={a.title} path={`/${a.slug}`} />
           {!preview && <ViewCounter slug={a.slug} />}
-          {!preview && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(a, settings)) }} />}
+          {!preview && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(a, settings)).replace(/</g, "\\u003c") }} />}
           {!preview && <Comments articleId={a.id} slug={a.slug} />}
         </article>
 

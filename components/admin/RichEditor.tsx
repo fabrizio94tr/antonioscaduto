@@ -12,11 +12,30 @@ const toHtml = (s: string) =>
     ? s
     : s.split(/\n{2,}/).map((p) => `<p>${p.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]!)}</p>`).join("");
 
+// Le foto del telefono pesano 3-10 MB e Vercel rifiuta richieste oltre 4,5 MB: si riducono nel browser (max 1600px, WebP).
+async function shrink(file: File): Promise<File> {
+  if (file.type === "image/gif" || !file.type.startsWith("image/")) return file;
+  try {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    if (scale === 1 && file.size < 1.5 * 1024 * 1024) return file;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bmp.width * scale);
+    canvas.height = Math.round(bmp.height * scale);
+    canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((ok) => canvas.toBlob(ok, "image/webp", 0.82));
+    if (!blob || blob.type !== "image/webp") return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+  } catch {
+    return file; // formato non leggibile dal browser (es. HEIC): ci pensa il controllo del server
+  }
+}
+
 export async function uploadImage(file: File): Promise<string> {
   const fd = new FormData();
-  fd.append("file", file);
+  fd.append("file", await shrink(file));
   const r = await fetch("/api/upload", { method: "POST", body: fd });
-  const j = await r.json();
+  const j = await r.json().catch(() => ({ error: r.status === 413 ? "Immagine troppo pesante." : `Upload fallito (${r.status})` }));
   if (!r.ok) throw new Error(j.error ?? "Upload fallito");
   return j.url;
 }

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { slugify } from "@/lib/slug";
+import { fromRomeInput } from "@/lib/rome-time";
 import { sendPush } from "@/lib/push";
 import { SITE_URL } from "@/lib/seo";
 import { isReader } from "@/lib/roles";
@@ -50,7 +51,7 @@ export async function saveArticle(_prev: SaveState, formData: FormData): Promise
   const title = str(formData, "title");
   if (!title) return { error: "Il titolo è obbligatorio." };
   const slug = (slugify(str(formData, "slug") || title)) || `articolo-${Date.now()}`;
-  const intent = str(formData, "intent"); // "draft" | "publish"
+  const intent = String(formData.getAll("intent").at(-1) ?? ""); // "draft" | "publish": vale il pulsante premuto (ultimo)
   const when = str(formData, "published_at");
 
   const row = {
@@ -66,7 +67,7 @@ export async function saveArticle(_prev: SaveState, formData: FormData): Promise
     breaking: formData.get("breaking") === "on",
     reliability: nul(formData, "reliability"),
     published: intent === "publish",
-    published_at: when ? new Date(when).toISOString() : new Date().toISOString(),
+    published_at: when ? fromRomeInput(when) : new Date().toISOString(),
     meta_title: nul(formData, "meta_title"),
     meta_description: nul(formData, "meta_description"),
     canonical_url: nul(formData, "canonical_url"),

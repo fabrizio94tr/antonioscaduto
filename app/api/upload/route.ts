@@ -1,7 +1,7 @@
 import { isReader } from "@/lib/roles";
 import { supabaseServer } from "@/lib/supabase";
 
-const MAX = 6 * 1024 * 1024;
+const MAX = 4 * 1024 * 1024; // sotto il limite di 4,5 MB di Vercel (il browser riduce già le foto)
 const TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/avif": "avif" };
 
 export async function POST(req: Request) {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   if (!(file instanceof File)) return Response.json({ error: "Nessun file" }, { status: 400 });
   const ext = TYPES[file.type];
   if (!ext) return Response.json({ error: "Formato non supportato (jpg, png, webp, gif, avif)" }, { status: 400 });
-  if (file.size > MAX) return Response.json({ error: "File troppo grande (max 6 MB)" }, { status: 400 });
+  if (file.size > MAX) return Response.json({ error: "File troppo grande (max 4 MB)" }, { status: 400 });
 
   const base = file.name.replace(/\.[^.]+$/, "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "immagine";
   const d = new Date();
