@@ -20,7 +20,7 @@ export default async function SiteFooter() {
   return (
     <footer className="footer">
       <div className="wrap">
-        <div className="logo">{s.site_title}</div>
+        <div className="logo"><img className="logo-mark" src="/logo-mark.webp" alt="" width={44} height={44} loading="lazy" /><span>{s.site_title}</span></div>
         <ul>
           {links.map(([s, n]) => (
             <li key={s}>

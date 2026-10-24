@@ -45,7 +45,8 @@ export default async function SiteHeader() {
           <div className="wrap hdr-in">
             <Link href="/" className="logo" aria-label={`${settings.site_title} – home`}>
               <LogoBall mode={mode} />
-              {settings.site_title}
+              <img className="logo-mark" src="/logo-mark.webp" alt="" width={56} height={56} />
+              <span>{settings.site_title}</span>
             </Link>
             <CleanMenu items={items} />
             <div className="tools no-clean">

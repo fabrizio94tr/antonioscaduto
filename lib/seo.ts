@@ -73,7 +73,7 @@ export function articleJsonLd(a: Article, s: Settings) {
         keywords: a.tags?.join(", ") || undefined,
         inLanguage: "it-IT",
         author: { "@type": "Person", name: a.author_name ?? "Antonio Scaduto" },
-        publisher: { "@type": "Organization", name: s.site_title, url: SITE_URL },
+        publisher: { "@type": "Organization", name: s.site_title, url: SITE_URL, logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png`, width: 512, height: 512 } },
       },
       {
         "@type": "BreadcrumbList",
