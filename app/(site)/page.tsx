@@ -51,12 +51,13 @@ export default async function Home() {
   return (
     <main className="wrap">
       <h1 className="sr-only">{site.site_title}{site.tagline ? ` – ${site.tagline}` : ""}</h1>
-      {all[0] && <p className="updated">Ultimo aggiornamento: {fmtLong(all[0].published_at)}</p>}
       <AdSlot slot="home" />
 
       <div className="cols">
         <div className="home-main">
           <section className="clean-feed only-clean" aria-label="Notizie">
+            {/* come alfredopedulla.com: una riga sola, centrata sulla colonna delle notizie */}
+            {all[0] && <p className="updated">Ultimo Aggiornamento: {fmtLong(all[0].published_at)}</p>}
             <CleanLead slides={leadSlides} />
             <h2 className="clean-title">News</h2>
             <div className="nl-list">{cleanList.map((a, i) => <NewsItem key={a.id} a={a} i={i} />)}</div>
