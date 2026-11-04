@@ -239,8 +239,8 @@
   :root[data-style="clean"] .hdr-in { padding-top: 0; }
   :root[data-style="clean"] .logo { font-size: 1.55rem; padding: 26px 0; justify-content: center; }
   :root[data-style="clean"] .cl-slide { aspect-ratio: 4 / 5; }
-  /* carosello da bordo a bordo dello schermo, come alfredopedulla.com */
-  :root[data-style="clean"] .clean-lead { margin-left: -16px; margin-right: -16px; }
+  /* carosello quasi a tutto schermo: 5px per lato, come alfredopedulla.com */
+  :root[data-style="clean"] .clean-lead { margin-left: -11px; margin-right: -11px; }
   /* fascia libera in basso per i pallini: non toccano mai il titolo */
   :root[data-style="clean"] .cl-cap { padding: 90px 16px 58px; gap: 8px; }
   :root[data-style="clean"] .cl-dots { bottom: 20px; }
