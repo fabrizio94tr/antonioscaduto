@@ -239,7 +239,11 @@
   :root[data-style="clean"] .hdr-in { padding-top: 0; }
   :root[data-style="clean"] .logo { font-size: 1.55rem; padding: 26px 0; justify-content: center; }
   :root[data-style="clean"] .cl-slide { aspect-ratio: 4 / 5; }
-  :root[data-style="clean"] .cl-cap { padding: 90px 14px 42px; gap: 8px; }
+  /* carosello da bordo a bordo dello schermo, come alfredopedulla.com */
+  :root[data-style="clean"] .clean-lead { margin-left: -16px; margin-right: -16px; }
+  /* fascia libera in basso per i pallini: non toccano mai il titolo */
+  :root[data-style="clean"] .cl-cap { padding: 90px 16px 58px; gap: 8px; }
+  :root[data-style="clean"] .cl-dots { bottom: 20px; }
   :root[data-style="clean"] .cl-cap em { font-size: .9rem; }
   :root[data-style="clean"] .cl-cap strong { font-size: 1.3rem; line-height: 1.2; font-weight: 600; }
   :root[data-style="clean"] .tagline { display: none; }
