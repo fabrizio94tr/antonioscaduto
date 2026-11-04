@@ -114,8 +114,8 @@
 :root[data-style="clean"] .cl-cap em { font-style: normal; color: var(--neon); font-size: 1.05rem; font-weight: 600; text-transform: uppercase; line-height: 1; }
 :root[data-style="clean"] .cl-cap strong { color: #fff; font-size: clamp(1.1rem, 1.7vw, 1.4rem); font-weight: 600; line-height: 1.2; }
 :root[data-style="clean"] .cl-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 8px; pointer-events: none; }
-:root[data-style="clean"] .cl-dots button { pointer-events: auto; width: 9px; height: 9px; padding: 0; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .55); cursor: pointer; transition: background .2s, transform .2s; }
-:root[data-style="clean"] .cl-dots button.on { background: #2c5cff; transform: scale(1.25); }
+:root[data-style="clean"] .cl-dots button { pointer-events: auto; width: 8px; height: 8px; padding: 0; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .55); cursor: pointer; transition: background .2s, transform .2s; }
+:root[data-style="clean"] .cl-dots button.on { background: #007aff; }
 
 :root[data-style="clean"] .clean-title, :root[data-style="clean"] .section-title { display: block; margin: 40px 0 16px; padding: 14px 0 0; border: 0; border-top: 3px solid #000; background: none; color: #000; font-size: 1.125rem; font-weight: 600; letter-spacing: 0; text-transform: uppercase; line-height: 1.1; }
 :root[data-style="clean"] .section-title span { font-size: inherit; font-weight: inherit; color: inherit; letter-spacing: 0; text-transform: inherit; }
@@ -242,10 +242,10 @@
   /* carosello quasi a tutto schermo: 5px per lato, come alfredopedulla.com */
   :root[data-style="clean"] .clean-lead { margin-left: -11px; margin-right: -11px; }
   /* fascia libera in basso per i pallini: non toccano mai il titolo */
-  :root[data-style="clean"] .cl-cap { padding: 90px 16px 58px; gap: 8px; }
-  :root[data-style="clean"] .cl-dots { bottom: 20px; }
-  :root[data-style="clean"] .cl-cap em { font-size: .9rem; }
-  :root[data-style="clean"] .cl-cap strong { font-size: 1.3rem; line-height: 1.2; font-weight: 600; }
+  :root[data-style="clean"] .cl-cap { padding: 90px 10px 52px; gap: 6px; }
+  :root[data-style="clean"] .cl-dots { bottom: 12px; }
+  :root[data-style="clean"] .cl-cap em { font-size: 14px; }
+  :root[data-style="clean"] .cl-cap strong { font-size: 22px; line-height: 24px; font-weight: 600; }
   :root[data-style="clean"] .tagline { display: none; }
   :root[data-style="clean"] .updated { margin: 16px 0 28px; font-size: min(12px, 3.1vw); }
   :root[data-style="clean"] .nl-list { gap: 12px; }
