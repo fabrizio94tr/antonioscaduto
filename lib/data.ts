@@ -190,3 +190,14 @@ export async function countNewerThan(iso: string): Promise<number> {
   const { count } = await supabasePublic().from("articles").select("id", { count: "exact", head: true }).eq("published", true).gt("published_at", iso).lte("published_at", nowIso());
   return count ?? 0;
 }
+
+/** Mi piace e commenti approvati di un articolo (barra sotto il titolo). */
+export async function getArticleStats(articleId: string): Promise<{ likes: number; comments: number }> {
+  if (!hasSupabase) return { likes: 0, comments: 0 };
+  const sb = supabasePublic();
+  const [l, c] = await Promise.all([
+    sb.from("article_likes").select("likes").eq("article_id", articleId).maybeSingle(),
+    sb.from("comments").select("id", { count: "exact", head: true }).eq("article_id", articleId).eq("approved", true),
+  ]);
+  return { likes: (l.data as { likes: number } | null)?.likes ?? 0, comments: c.count ?? 0 };
+}
